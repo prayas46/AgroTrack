@@ -11,7 +11,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert";
-import { Biohazard, Bug, Droplets, Map, Wind } from "lucide-react";
+import { Biohazard, Bug, Droplets, Map, Wind, AlertTriangle } from "lucide-react";
 import type { ClimateRiskForecastOutput } from "@/ai/flows/climate-risk-forecast";
 
 const riskItems = [
@@ -48,7 +48,7 @@ export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }
                 <CardDescription>Visual overview of high-risk zones in the specified region.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                 {data.riskMapDataUri && (
+                 {data.riskMapDataUri ? (
                     <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-lg border">
                         <Image
                         src={data.riskMapDataUri}
@@ -58,6 +58,14 @@ export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }
                         />
                          <div className="absolute inset-0 bg-black/40 " />
                     </div>
+                ) : (
+                    <Alert variant="destructive">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Map Not Available</AlertTitle>
+                        <AlertDescription>
+                            The AI was unable to generate the risk map image for this forecast, but the textual analysis is still available.
+                        </AlertDescription>
+                    </Alert>
                 )}
                  <Alert>
                     <AlertTitle>Map Analysis</AlertTitle>

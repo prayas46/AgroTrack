@@ -30,7 +30,7 @@ const ClimateRiskForecastOutputSchema = z.object({
   waterShortageRisk: z.string().describe('The risk of water shortage.'),
   extremeWeatherRisk: z.string().describe('The risk of extreme weather events.'),
   riskMapAnalysis: z.string().describe('A detailed analysis of the generated risk map for the specified region.'),
-  riskMapDataUri: z.string().describe("A data URI of a satellite map showing various regions with color-coded risk overlays. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
+  riskMapDataUri: z.string().optional().describe("A data URI of a satellite map showing various regions with color-coded risk overlays. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
 });
 export type ClimateRiskForecastOutput = z.infer<typeof ClimateRiskForecastOutputSchema>;
 
@@ -64,25 +64,33 @@ const climateRiskForecastFlow = ai.defineFlow(
     outputSchema: ClimateRiskForecastOutputSchema,
   },
   async input => {
-    const {output: textOutput} = await textGenerationPrompt(input);
-    if (!textOutput) {
-        throw new Error('Failed to generate climate risk text forecast.');
-    }
-
     const imagePrompt = `A satellite image of ${input.region} with color-coded overlays indicating different climate risk levels. Use distinct colors for high, medium, and low-risk zones for factors like water shortage, pest attacks, and extreme weather. Include a legend.`;
 
-    const {media} = await ai.generate({
+    // Run text and image generation in parallel
+    const [textResult, imageResult] = await Promise.all([
+      textGenerationPrompt(input).catch(err => {
+        console.error("Text generation failed:", err);
+        return null; // Return null if text generation fails
+      }),
+      ai.generate({
         model: 'googleai/imagen-4.0-fast-generate-001',
         prompt: imagePrompt,
-    });
-    
-    if (!media.url) {
-        throw new Error('Failed to generate risk map image.');
+      }).catch(err => {
+        console.error("Image generation failed:", err);
+        return null; // Return null if image generation fails
+      })
+    ]);
+
+    const textOutput = textResult?.output;
+    const imageUrl = imageResult?.media?.url;
+
+    if (!textOutput) {
+        throw new Error('Failed to generate the climate risk text forecast. Please try again.');
     }
 
     return {
         ...textOutput,
-        riskMapDataUri: media.url,
+        riskMapDataUri: imageUrl,
     };
   }
 );

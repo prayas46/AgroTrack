@@ -14,6 +14,7 @@ import {
 import { Biohazard, Bug, Droplets, Map, Wind, AlertTriangle, Siren } from "lucide-react";
 import type { ClimateRiskForecastOutput } from "@/ai/flows/climate-risk-forecast";
 import { WeatherAlerts } from "./weather-alerts";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const riskItems = [
     { key: "pestAttackProbability", title: "Pest Attack Probability", icon: Bug },
@@ -23,6 +24,7 @@ const riskItems = [
 ] as const;
 
 export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }) {
+    const riskMapImage = PlaceHolderImages.find(img => img.id === 'risk-map');
   return (
     <div className="space-y-8">
         <h2 className="text-2xl font-bold tracking-tight font-headline">Forecast Results</h2>
@@ -75,14 +77,17 @@ export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }
                         />
                          <div className="absolute inset-0 bg-black/10 " />
                     </div>
-                ) : (
-                    <Alert variant="destructive">
-                        <AlertTriangle className="h-4 w-4" />
-                        <AlertTitle>Map Not Available</AlertTitle>
-                        <AlertDescription>
-                            The AI was unable to generate the risk map image for this forecast, but the textual analysis is still available.
-                        </AlertDescription>
-                    </Alert>
+                ) : riskMapImage && (
+                    <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-lg border">
+                        <Image
+                        src={riskMapImage.imageUrl}
+                        alt={riskMapImage.description}
+                        fill
+                        className="object-cover"
+                        data-ai-hint={riskMapImage.imageHint}
+                        />
+                         <div className="absolute inset-0 bg-black/10 " />
+                    </div>
                 )}
                  <Alert>
                     <AlertTitle>Map Analysis</AlertTitle>

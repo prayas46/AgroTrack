@@ -85,27 +85,11 @@ const climateRiskForecastFlow = ai.defineFlow(
     if (!textOutput) {
         throw new Error('Failed to generate the climate risk text forecast. Please try again.');
     }
-
-    // Step 2: Use the analysis to create a better prompt for the image.
-    const imagePrompt = `A satellite image of ${input.region} with color-coded overlays indicating different climate risk levels, based on this analysis: ${textOutput.riskMapAnalysis}. Use distinct colors for high, medium, and low-risk zones for factors like water shortage, pest attacks, and extreme weather. Include a clear legend.`;
-
-    let imageUrl: string | undefined;
-    try {
-      // Step 3: Attempt to generate the image.
-      const imageResult = await ai.generate({
-        model: 'googleai/imagen-4.0-fast-generate-001',
-        prompt: imagePrompt,
-      });
-      imageUrl = imageResult?.media?.url;
-    } catch (error) {
-      console.error("Image generation failed:", error);
-      // If image generation fails, we proceed without it, imageUrl will be undefined.
-    }
-
-    // Step 4: Return the combined result.
+    
+    // We are no longer generating an image. The UI will use a placeholder.
     return {
         ...textOutput,
-        riskMapDataUri: imageUrl,
+        riskMapDataUri: undefined,
     };
   }
 );

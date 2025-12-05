@@ -11,13 +11,13 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert";
-import { Bug, Droplets, Map, Virus, Wind } from "lucide-react";
+import { Biohazard, Bug, Droplets, Map, Wind } from "lucide-react";
 import type { ClimateRiskForecastOutput } from "@/ai/flows/climate-risk-forecast";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const riskItems = [
     { key: "pestAttackProbability", title: "Pest Attack Probability", icon: Bug },
-    { key: "cropDiseaseOutbreak", title: "Crop Disease Outbreak", icon: Virus },
+    { key: "cropDiseaseOutbreak", title: "Crop Disease Outbreak", icon: Biohazard },
     { key: "waterShortageRisk", title: "Water Shortage Risk", icon: Droplets },
     { key: "extremeWeatherRisk", title: "Extreme Weather Risk", icon: Wind },
 ] as const;

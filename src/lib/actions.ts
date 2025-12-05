@@ -19,6 +19,11 @@ import {
   type DiagnosePlantOutput,
 } from "@/ai/flows/diagnose-plant";
 import {
+  textToSpeech,
+  type TextToSpeechOutput,
+} from "@/ai/flows/text-to-speech";
+
+import {
   ClimateRiskFormSchema,
   MarketplaceFormSchema,
   PlantDoctorFormSchema,
@@ -143,5 +148,22 @@ export async function getPlantDiagnosis(
       message: "Failed to diagnose plant. Please try again.",
       data: null,
     };
+  }
+}
+
+
+export async function getSpokenText(
+  text: string
+): Promise<{ audioDataUri: string } | { error: string }> {
+  if (!text) {
+    return { error: "No text provided to read." };
+  }
+
+  try {
+    const { audioDataUri } = await textToSpeech({ text });
+    return { audioDataUri };
+  } catch (error) {
+    console.error("Text-to-speech conversion failed:", error);
+    return { error: "Failed to convert text to speech. Please try again." };
   }
 }

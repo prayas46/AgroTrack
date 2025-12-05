@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/alert";
 import { Biohazard, Bug, Droplets, Map, Wind } from "lucide-react";
 import type { ClimateRiskForecastOutput } from "@/ai/flows/climate-risk-forecast";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const riskItems = [
     { key: "pestAttackProbability", title: "Pest Attack Probability", icon: Bug },
@@ -23,8 +22,6 @@ const riskItems = [
 ] as const;
 
 export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }) {
-  const riskMapImage = PlaceHolderImages.find((img) => img.id === "risk-map");
-
   return (
     <div className="space-y-8">
         <h2 className="text-2xl font-bold tracking-tight font-headline">Forecast Results</h2>
@@ -51,14 +48,13 @@ export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }
                 <CardDescription>Visual overview of high-risk zones in the specified region.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                 {riskMapImage && (
+                 {data.riskMapDataUri && (
                     <div className="relative h-64 md:h-96 w-full overflow-hidden rounded-lg border">
                         <Image
-                        src={riskMapImage.imageUrl}
-                        alt={riskMapImage.description}
+                        src={data.riskMapDataUri}
+                        alt="AI-generated risk map"
                         fill
                         className="object-cover"
-                        data-ai-hint={riskMapImage.imageHint}
                         />
                          <div className="absolute inset-0 bg-black/40 " />
                     </div>
@@ -66,7 +62,7 @@ export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }
                  <Alert>
                     <AlertTitle>Map Analysis</AlertTitle>
                     <AlertDescription>
-                        {data.riskMap}
+                        {data.riskMapAnalysis}
                     </AlertDescription>
                 </Alert>
             </CardContent>

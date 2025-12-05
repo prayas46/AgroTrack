@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -28,7 +29,8 @@ const ClimateRiskForecastOutputSchema = z.object({
   cropDiseaseOutbreak: z.string().describe('The risk of crop disease outbreak.'),
   waterShortageRisk: z.string().describe('The risk of water shortage.'),
   extremeWeatherRisk: z.string().describe('The risk of extreme weather events.'),
-  riskMap: z.string().describe('Description of a risk map for the specified region.'),
+  riskMapAnalysis: z.string().describe('A detailed analysis of the generated risk map for the specified region.'),
+  riskMapDataUri: z.string().describe("A data URI of a satellite map showing various regions with color-coded risk overlays. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
 });
 export type ClimateRiskForecastOutput = z.infer<typeof ClimateRiskForecastOutputSchema>;
 
@@ -36,24 +38,22 @@ export async function climateRiskForecast(input: ClimateRiskForecastInput): Prom
   return climateRiskForecastFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'climateRiskForecastPrompt',
+const textGenerationPrompt = ai.definePrompt({
+  name: 'climateRiskTextPrompt',
   input: {schema: ClimateRiskForecastInputSchema},
-  output: {schema: ClimateRiskForecastOutputSchema},
+  output: {schema: ClimateRiskForecastOutputSchema.pick({
+    pestAttackProbability: true,
+    cropDiseaseOutbreak: true,
+    waterShortageRisk: true,
+    extremeWeatherRisk: true,
+    riskMapAnalysis: true,
+  })},
   prompt: `You are an AI assistant that forecasts climate risks for farmers.
 
-  Based on the region and number of days provided, generate a climate risk forecast, detailing the probability of pest attacks, risk of crop disease outbreak, risk of water shortage, and risk of extreme weather events.
+  Based on the region and number of days provided, generate a climate risk forecast, detailing the probability of pest attacks, risk of crop disease outbreak, risk of water shortage, and risk of extreme weather events. Provide a detailed analysis for a risk map.
 
   Region: {{{region}}}
   Days: {{{days}}}
-
-  Pest Attack Probability: Describe the probability of pest attacks in the region for the specified time frame.
-  Crop Disease Outbreak: Describe the risk of crop disease outbreak in the region for the specified time frame.
-  Water Shortage Risk: Describe the risk of water shortage in the region for the specified time frame.
-  Extreme Weather Risk: Describe the risk of extreme weather events in the region for the specified time frame.
-  Risk Map: Describe a risk map for the specified region, mentioning key areas of concern.
-
-  {{output}}
 `,
 });
 
@@ -64,7 +64,25 @@ const climateRiskForecastFlow = ai.defineFlow(
     outputSchema: ClimateRiskForecastOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    const {output: textOutput} = await textGenerationPrompt(input);
+    if (!textOutput) {
+        throw new Error('Failed to generate climate risk text forecast.');
+    }
+
+    const imagePrompt = `A satellite image of ${input.region} with color-coded overlays indicating different climate risk levels. Use distinct colors for high, medium, and low-risk zones for factors like water shortage, pest attacks, and extreme weather. Include a legend.`;
+
+    const {media} = await ai.generate({
+        model: 'googleai/imagen-4.0-fast-generate-001',
+        prompt: imagePrompt,
+    });
+    
+    if (!media.url) {
+        throw new Error('Failed to generate risk map image.');
+    }
+
+    return {
+        ...textOutput,
+        riskMapDataUri: media.url,
+    };
   }
 );

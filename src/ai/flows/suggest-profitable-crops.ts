@@ -42,7 +42,7 @@ const prompt = ai.definePrompt({
 
 Land Area: {{{landArea}}} acres
 Soil Details: {{{soilDetails}}}
-Budget: ${{{budget}}} USD
+Budget: {{{budget}}} USD
 
 Provide a list of crop suggestions, including the expected ROI (as a percentage), a detailed cost breakdown, and the historical market price trend for each crop.
 

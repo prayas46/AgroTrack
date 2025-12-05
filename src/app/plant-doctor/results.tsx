@@ -16,10 +16,12 @@ import { Button } from "@/components/ui/button";
 import { CircleHelp, Leaf, Loader2, Microscope, ShieldCheck, Volume2 } from "lucide-react";
 import type { DiagnosePlantOutput } from "@/ai/flows/diagnose-plant";
 import { getSpokenText } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
 
 function ReadAloudButton({ text }: { text: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const { toast } = useToast();
 
   const handleReadAloud = async () => {
     setIsLoading(true);
@@ -37,8 +39,11 @@ function ReadAloudButton({ text }: { text: string }) {
       setAudio(newAudio);
       newAudio.play();
     } else {
-      // Handle error, maybe show a toast
-      console.error(result.error);
+      toast({
+        variant: "destructive",
+        title: "Speech Error",
+        description: result.error,
+      });
     }
   };
 

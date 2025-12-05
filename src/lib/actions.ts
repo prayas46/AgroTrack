@@ -121,7 +121,7 @@ export async function getPlantDiagnosis(
   prevState: FormState<DiagnosePlantOutput>,
   formData: FormData
 ): Promise<FormState<DiagnosePlantOutput>> {
-  const validatedFields = PlantDoctorFormSchema.safeParse({
+  const validatedFields = await PlantDoctorFormSchema.safeParseAsync({
     plantImage: formData.get("plantImage"),
   });
 

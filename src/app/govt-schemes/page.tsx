@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/page-header";
@@ -61,8 +62,8 @@ export default function GovtSchemesPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {schemes.map((scheme) => (
-                <Button asChild variant="outline" className="w-full" key={scheme.name}>
-                    <Link href={scheme.url} target="_blank" rel="noopener noreferrer">
+                <Button asChild variant="outline" className="w-full h-auto whitespace-normal" key={scheme.name}>
+                    <Link href={scheme.url} target="_blank" rel="noopener noreferrer" className="justify-center">
                         <LinkIcon className="mr-2 h-4 w-4" />
                         {scheme.name}
                     </Link>

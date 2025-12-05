@@ -26,9 +26,9 @@
     },
     {
       "id": "govt-schemes-card",
-      "description": "An official government document or building, representing schemes and services.",
-      "imageUrl": "https://images.unsplash.com/photo-1621067205165-1d48b48b9c64?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnb3Zlcm5tZW50JTIwZG9jdW1lbnR8ZW58MHx8fHwxNzE2NTkwOTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "government document"
+      "description": "The Ashoka Lion Capital, a symbol of the government of India.",
+      "imageUrl": "https://images.unsplash.com/photo-1615928130258-009c9597b1b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhc2hva2ElMjBlbWJsZW18ZW58MHx8fHwxNzE2NTkwOTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "government emblem"
     },
     {
       "id": "risk-map",

@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "climate-risk-card",
+      "description": "A visual representation of weather patterns over a field.",
+      "imageUrl": "https://images.unsplash.com/photo-1711397651462-3b2a22f5cfc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3ZWF0aGVyJTIwYWdyaWN1bHR1cmV8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "weather agriculture"
+    },
+    {
+      "id": "profit-planner-card",
+      "description": "An image showing thriving crops and a rising financial graph.",
+      "imageUrl": "https://picsum.photos/seed/profit/400/300",
+      "imageHint": "crops money"
+    },
+    {
+      "id": "marketplace-card",
+      "description": "A bustling market scene with fresh produce.",
+      "imageUrl": "https://images.unsplash.com/photo-1609056615079-1f5f4c909a7f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtYXJrZXQlMjBidXNpbmVzc3xlbnwwfHx8fDE3NjQ5MzQzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "market business"
+    },
+    {
+      "id": "passport-card",
+      "description": "A futuristic image representing blockchain technology and data verification.",
+      "imageUrl": "https://images.unsplash.com/photo-1617396900799-f4ec2b43c7ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YmxvY2tjaGFpbiUyMHRlY2hub2xvZ3l8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "blockchain technology"
+    },
+    {
+      "id": "risk-map",
+      "description": "A satellite map showing various regions with color-coded risk overlays.",
+      "imageUrl": "https://images.unsplash.com/photo-1536430291604-5e07b05f0592?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzYXRlbGxpdGUlMjBtYXB8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "satellite map"
+    }
+  ]
 }

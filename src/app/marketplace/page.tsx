@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useEffect } from "react";
 import { getMarketMatches } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -58,7 +59,7 @@ function SubmitButton() {
 }
 
 export default function MarketplacePage() {
-  const [state, formAction] = useFormState(getMarketMatches, initialState);
+  const [state, formAction] = useActionState(getMarketMatches, initialState);
   const { toast } = useToast();
 
   useEffect(() => {

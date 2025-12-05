@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useEffect } from "react";
 import { getProfitPlan } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -50,7 +51,7 @@ function SubmitButton() {
 }
 
 export default function ProfitPlannerPage() {
-  const [state, formAction] = useFormState(getProfitPlan, initialState);
+  const [state, formAction] = useActionState(getProfitPlan, initialState);
   const { toast } = useToast();
 
   useEffect(() => {

@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useEffect } from "react";
 import { getClimateRiskForecast } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -55,7 +56,7 @@ function SubmitButton() {
 }
 
 export default function ClimateRiskPage() {
-  const [state, formAction] = useFormState(getClimateRiskForecast, initialState);
+  const [state, formAction] = useActionState(getClimateRiskForecast, initialState);
   const { toast } = useToast();
 
   useEffect(() => {

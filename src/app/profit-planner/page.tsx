@@ -95,12 +95,12 @@ export default function ProfitPlannerPage() {
                     )}
                 </div>
                  <div className="space-y-2">
-                    <Label htmlFor="budget">Budget (in USD)</Label>
+                    <Label htmlFor="budget">Budget (in Rupees)</Label>
                     <Input
                         id="budget"
                         name="budget"
                         type="number"
-                        placeholder="e.g., 10000"
+                        placeholder="e.g., 800000"
                         required
                     />
                     {state.errors?.budget && (

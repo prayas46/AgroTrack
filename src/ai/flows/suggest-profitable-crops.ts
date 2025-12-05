@@ -14,7 +14,7 @@ import {z} from 'genkit';
 const SuggestProfitableCropsInputSchema = z.object({
   landArea: z.number().describe('The area of the land in acres.'),
   soilDetails: z.string().describe('Detailed information about the soil composition and properties.'),
-  budget: z.number().describe('The total budget available for farming activities in USD.'),
+  budget: z.number().describe('The total budget available for farming activities in INR.'),
 });
 export type SuggestProfitableCropsInput = z.infer<typeof SuggestProfitableCropsInputSchema>;
 
@@ -42,7 +42,7 @@ const prompt = ai.definePrompt({
 
 Land Area: {{{landArea}}} acres
 Soil Details: {{{soilDetails}}}
-Budget: {{{budget}}} USD
+Budget: {{{budget}}} INR
 
 Provide a list of crop suggestions, including the expected ROI (as a percentage), a detailed cost breakdown, and the historical market price trend for each crop.
 
@@ -53,7 +53,7 @@ Example:
   {
     "cropName": "Wheat",
     "expectedRoi": 25,
-    "costBreakdown": "Seeds: $100, Fertilizer: $50, Labor: $200",
+    "costBreakdown": "Seeds: ₹10000, Fertilizer: ₹5000, Labor: ₹20000",
     "historicalMarketPriceTrend": "Stable"
   },
   ...

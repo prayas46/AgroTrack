@@ -2,7 +2,8 @@
 "use client";
 
 import React from "react";
-import { useActionState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useEffect, useState, useRef } from "react";
 import { getPlantDiagnosis } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -18,10 +19,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PlantDoctorResults } from "./results";
 import type { DiagnosePlantOutput } from "@/ai/flows/diagnose-plant";
-import { Image as ImageIcon, Loader2, Upload } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 import Image from "next/image";
 
 type PlantDoctorState = {

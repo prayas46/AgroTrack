@@ -17,7 +17,7 @@ import {
   CloudSun,
   DollarSign,
   Store,
-  ShieldCheck,
+  FileText,
   Stethoscope,
 } from "lucide-react";
 import { Logo } from "./logo";
@@ -29,7 +29,7 @@ const navItems = [
   { href: "/profit-planner", icon: DollarSign, label: "Profit Planner" },
   { href: "/marketplace", icon: Store, label: "Marketplace" },
   { href: "/plant-doctor", icon: Stethoscope, label: "Plant Doctor" },
-  { href: "/passport", icon: ShieldCheck, label: "Digital Passport" },
+  { href: "/govt-schemes", icon: FileText, label: "Govt. Schemes" },
 ];
 
 export default function AppSidebar() {

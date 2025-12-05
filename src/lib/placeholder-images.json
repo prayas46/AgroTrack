@@ -25,10 +25,10 @@
       "imageHint": "plant inspection"
     },
     {
-      "id": "passport-card",
-      "description": "A futuristic image representing blockchain technology and data verification.",
+      "id": "govt-schemes-card",
+      "description": "An official government document or building, representing schemes and services.",
       "imageUrl": "https://images.unsplash.com/photo-1617396900799-f4ec2b43c7ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YmxvY2tjaGFpbiUyMHRlY2hub2xvZ3l8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "blockchain technology"
+      "imageHint": "government document"
     },
     {
       "id": "risk-map",

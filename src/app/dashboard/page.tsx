@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, ShieldCheck, Store, Stethoscope } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, FileText, Store, Stethoscope } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -46,11 +46,11 @@ const features = [
     image: PlaceHolderImages.find(img => img.id === "plant-doctor-card"),
   },
   {
-    title: "Farm Digital Passport",
-    description: "Enhance transparency and fetch higher prices with a blockchain-backed record for every harvest.",
-    link: "/passport",
-    icon: ShieldCheck,
-    image: PlaceHolderImages.find(img => img.id === "passport-card"),
+    title: "Government Schemes",
+    description: "Access important government schemes and manage your documents like your Aadhar card.",
+    link: "/govt-schemes",
+    icon: FileText,
+    image: PlaceHolderImages.find(img => img.id === "govt-schemes-card"),
   },
 ];
 

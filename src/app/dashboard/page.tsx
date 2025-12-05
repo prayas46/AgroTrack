@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, ShieldCheck, Store } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, ShieldCheck, Store, Stethoscope } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -37,6 +37,13 @@ const features = [
     link: "/marketplace",
     icon: Store,
     image: PlaceHolderImages.find(img => img.id === "marketplace-card"),
+  },
+   {
+    title: "Plant Doctor",
+    description: "Upload an image of a plant to diagnose diseases and get fertilizer recommendations.",
+    link: "/plant-doctor",
+    icon: Stethoscope,
+    image: PlaceHolderImages.find(img => img.id === "plant-doctor-card"),
   },
   {
     title: "Farm Digital Passport",

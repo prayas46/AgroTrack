@@ -18,6 +18,7 @@ import {
   DollarSign,
   Store,
   ShieldCheck,
+  Stethoscope,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/climate-risk", icon: CloudSun, label: "Climate Risk" },
   { href: "/profit-planner", icon: DollarSign, label: "Profit Planner" },
   { href: "/marketplace", icon: Store, label: "Marketplace" },
+  { href: "/plant-doctor", icon: Stethoscope, label: "Plant Doctor" },
   { href: "/passport", icon: ShieldCheck, label: "Digital Passport" },
 ];
 

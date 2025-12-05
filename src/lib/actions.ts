@@ -15,8 +15,13 @@ import {
   type MatchWithMarketParticipantsOutput,
 } from "@/ai/flows/match-with-market-participants";
 import {
+  diagnosePlant,
+  type DiagnosePlantOutput,
+} from "@/ai/flows/diagnose-plant";
+import {
   ClimateRiskFormSchema,
   MarketplaceFormSchema,
+  PlantDoctorFormSchema,
   ProfitPlannerFormSchema,
 } from "./definitions";
 
@@ -107,6 +112,35 @@ export async function getMarketMatches(
   } catch (error) {
     return {
       message: "Failed to find market matches. Please try again.",
+      data: null,
+    };
+  }
+}
+
+export async function getPlantDiagnosis(
+  prevState: FormState<DiagnosePlantOutput>,
+  formData: FormData
+): Promise<FormState<DiagnosePlantOutput>> {
+  const validatedFields = PlantDoctorFormSchema.safeParse({
+    plantImage: formData.get("plantImage"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      message: "Invalid form data.",
+      errors: validatedFields.error.flatten().fieldErrors,
+      data: null,
+    };
+  }
+
+  try {
+    const data = await diagnosePlant({
+      photoDataUri: validatedFields.data.plantImage,
+    });
+    return { message: null, data, errors: {} };
+  } catch (error) {
+    return {
+      message: "Failed to diagnose plant. Please try again.",
       data: null,
     };
   }

@@ -19,6 +19,12 @@
       "imageHint": "market business"
     },
     {
+      "id": "plant-doctor-card",
+      "description": "A close-up of a hand holding a magnifying glass over a leaf.",
+      "imageUrl": "https://images.unsplash.com/photo-1758524054151-46fd7b2ac71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGxhbnQlMjBpbnNwZWN0aW9ufGVufDB8fHx8MTc2NDkzNjk4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "plant inspection"
+    },
+    {
       "id": "passport-card",
       "description": "A futuristic image representing blockchain technology and data verification.",
       "imageUrl": "https://images.unsplash.com/photo-1617396900799-f4ec2b43c7ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YmxvY2tjaGFpbiUyMHRlY2hub2xvZ3l8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",

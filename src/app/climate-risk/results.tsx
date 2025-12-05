@@ -11,8 +11,9 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert";
-import { Biohazard, Bug, Droplets, Map, Wind, AlertTriangle } from "lucide-react";
+import { Biohazard, Bug, Droplets, Map, Wind, AlertTriangle, Siren } from "lucide-react";
 import type { ClimateRiskForecastOutput } from "@/ai/flows/climate-risk-forecast";
+import { WeatherAlerts } from "./weather-alerts";
 
 const riskItems = [
     { key: "pestAttackProbability", title: "Pest Attack Probability", icon: Bug },
@@ -25,6 +26,22 @@ export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }
   return (
     <div className="space-y-8">
         <h2 className="text-2xl font-bold tracking-tight font-headline">Forecast Results</h2>
+
+        {data.weatherAlerts && data.weatherAlerts.length > 0 && (
+          <Card>
+              <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                      <Siren className="h-6 w-6 text-destructive" />
+                      Active Weather Alerts
+                  </CardTitle>
+                  <CardDescription>Immediate weather warnings for your region.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                  <WeatherAlerts alerts={data.weatherAlerts} />
+              </CardContent>
+          </Card>
+        )}
+
         <div className="grid gap-6 md:grid-cols-2">
             {riskItems.map(item => (
                 <Card key={item.key}>

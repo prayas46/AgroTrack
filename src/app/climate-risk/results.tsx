@@ -56,7 +56,7 @@ export function ClimateRiskResults({ data }: { data: ClimateRiskForecastOutput }
                         fill
                         className="object-cover"
                         />
-                         <div className="absolute inset-0 bg-black/40 " />
+                         <div className="absolute inset-0 bg-black/10 " />
                     </div>
                 ) : (
                     <Alert variant="destructive">

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/app-sidebar";
+import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export const metadata: Metadata = {
   title: "AgroCast",
@@ -26,15 +27,17 @@ export default function RootLayout({
         />
       </head>
       <body className={cn("font-body antialiased")}>
-        <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-            <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-              {children}
-            </div>
-          </SidebarInset>
-        </SidebarProvider>
-        <Toaster />
+        <FirebaseClientProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+                {children}
+              </div>
+            </SidebarInset>
+          </SidebarProvider>
+          <Toaster />
+        </FirebaseClientProvider>
       </body>
     </html>
   );

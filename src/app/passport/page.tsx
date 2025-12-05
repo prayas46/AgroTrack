@@ -1,3 +1,6 @@
+
+'use client';
+import { useMemo } from 'react';
 import { PageHeader } from "@/components/page-header";
 import { QRCodeIcon } from "@/components/icons";
 import {
@@ -9,18 +12,60 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Fingerprint, MapPin, TestTube2, Sprout, Droplets, Footprints } from "lucide-react";
-
-const passportDetails = [
-  { icon: Fingerprint, label: "Crop Variety", value: "Cabernet Sauvignon" },
-  { icon: MapPin, label: "Location", value: "Napa Valley, CA" },
-  { icon: TestTube2, label: "Fertilizer Usage", value: "Organic Compost, 2 tons/acre" },
-  { icon: Sprout, label: "Pesticide Usage", value: "Neem Oil, Copper Sulfate" },
-  { icon: Droplets, label: "Water Usage", value: "Drip Irrigation, 5,000 gal/acre" },
-  { icon: Footprints, label: "Carbon Footprint", value: "0.2 kg CO2e/kg" },
-];
+import { Fingerprint, MapPin, TestTube2, Sprout, Droplets, Footprints, Loader2 } from "lucide-react";
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 export default function PassportPage() {
+  const firestore = useFirestore();
+
+  // IMPORTANT: You must memoize the document reference
+  const passportRef = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'passports', 'sample-passport') : null),
+    [firestore]
+  );
+  const { data: passport, isLoading, error } = useDoc(passportRef);
+
+  const passportDetails = useMemo(() => {
+    if (!passport) return [];
+    return [
+      { icon: Fingerprint, label: "Crop Variety", value: passport.cropVariety },
+      { icon: MapPin, label: "Location", value: passport.location },
+      { icon: TestTube2, label: "Fertilizer Usage", value: passport.fertilizerUsage },
+      { icon: Sprout, label: "Pesticide Usage", value: passport.pesticideUsage },
+      { icon: Droplets, label: "Water Usage", value: passport.waterUsage },
+      { icon: Footprints, label: "Carbon Footprint", value: passport.carbonFootprint },
+    ];
+  }, [passport]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10 border rounded-lg bg-destructive/10 text-destructive">
+        <h3 className="text-lg font-semibold">Error loading passport</h3>
+        <p className="text-sm">{error.message}</p>
+      </div>
+    );
+  }
+
+  if (!passport) {
+    return (
+      <div className="text-center py-10 border rounded-lg">
+        <h3 className="text-lg font-semibold">No passport data found</h3>
+        <p className="text-muted-foreground">
+         The sample passport document does not exist.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -31,7 +76,7 @@ export default function PassportPage() {
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
             <div>
-              <CardTitle className="text-2xl font-headline">Harvest Batch: WN-2024-CS-01</CardTitle>
+              <CardTitle className="text-2xl font-headline">Harvest Batch: {passport.batchId}</CardTitle>
               <CardDescription>
                 A complete, immutable record from seed to sale.
               </CardDescription>
@@ -48,7 +93,7 @@ export default function PassportPage() {
                 <QRCodeIcon className="h-32 w-32 text-foreground"/>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">Blockchain ID:</p>
-              <p className="text-xs font-mono break-all">0x4a2e...9d8c</p>
+              <p className="text-xs font-mono break-all">{passport.blockchainId}</p>
             </div>
 
             <div className="md:col-span-2 space-y-4">

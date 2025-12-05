@@ -1,5 +1,32 @@
+
 {
   "entities": {
+    "Passport": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Passport",
+      "type": "object",
+      "description": "Represents a digital passport for a harvest batch.",
+      "properties": {
+        "batchId": { "type": "string" },
+        "blockchainId": { "type": "string" },
+        "cropVariety": { "type": "string" },
+        "location": { "type": "string" },
+        "fertilizerUsage": { "type": "string" },
+        "pesticideUsage": { "type": "string" },
+        "waterUsage": { "type": "string" },
+        "carbonFootprint": { "type": "string" }
+      },
+      "required": [
+        "batchId",
+        "blockchainId",
+        "cropVariety",
+        "location",
+        "fertilizerUsage",
+        "pesticideUsage",
+        "waterUsage",
+        "carbonFootprint"
+      ]
+    },
     "Farmer": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Farmer",
@@ -406,6 +433,15 @@
   },
   "firestore": {
     "structure": [
+      {
+        "path": "/passports/{passportId}",
+        "definition": {
+          "entityName": "Passport",
+          "schema": { "$ref": "#/backend/entities/Passport" },
+          "description": "Stores digital passport documents.",
+          "params": [{ "name": "passportId", "description": "The unique ID for the passport." }]
+        }
+      },
       {
         "path": "/users/{farmerId}",
         "definition": {

@@ -1,14 +1,15 @@
+
 /**
  * @file firestore.rules
  * @description Security rules for the AgroCast Firestore database.
  *
  * @section Core Philosophy
- * This ruleset enforces a strict user-ownership model, ensuring that farmers have exclusive control over their personal and operational data. The security model is designed around the principle that a user (a "Farmer") can only access documents within their own data tree, which is segregated under the path `/users/{farmerId}`.
+ * This ruleset enforces a strict user-ownership model, ensuring that farmers have exclusive control over their personal and operational data. The security model is designed around the principle that a user (a "Farmer") can only access documents within their own data tree, which is segregated under the path `/users/{farmerId}`. Public data is world-readable, but write access is restricted.
  *
  * @section Data Structure
  * The data is organized into two main categories:
  * 1. User-Private Data: All data specific to a farmer, such as their profile, land details, profit predictions, risk forecasts, and harvest batches, is nested under `/users/{farmerId}`. Access to these paths is strictly controlled by matching the authenticated user's ID with the `{farmerId}` wildcard.
- * 2. Public & Shared Data: Collections that contain data relevant to all users, such as crop information (`/crops`) and marketplace listings (`/marketplace_offers`, `/buyers`, etc.), are placed at the root level. These collections are generally world-readable to facilitate app-wide features, but write access is tightly controlled.
+ * 2. Public & Shared Data: Collections that contain data relevant to all users, such as crop information (`/crops`), digital passports (`/passports`), and marketplace listings (`/marketplace_offers`, `/buyers`, etc.), are placed at the root level. These collections are generally world-readable to facilitate app-wide features, but write access is tightly controlled.
  *
  * @section Key Security Decisions
  * - User Isolation: A user cannot read, list, or write data belonging to another user. This is the cornerstone of the security model.
@@ -145,6 +146,18 @@ service cloud.firestore {
     // -------------------------------------------------------------------------
     // Public & Shared Collections
     // -------------------------------------------------------------------------
+    
+    /**
+     * @description Stores digital passport information. Data is public and read-only for clients.
+     * @path /passports/{passportId}
+     * @allow Any user, authenticated or not, reading passport data.
+     * @deny Any client trying to create, update, or delete a passport document.
+     * @principle Provides public read access to global data while protecting it from client modification.
+     */
+    match /passports/{passportId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
 
     /**
      * @description Stores global crop information. Data is public and read-only for clients.

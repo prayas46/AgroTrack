@@ -61,7 +61,7 @@ export default function GovtSchemesPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {schemes.map((scheme) => (
-                <Button asChild variant="outline" className="w-full justify-start" key={scheme.name}>
+                <Button asChild variant="outline" className="w-full" key={scheme.name}>
                     <Link href={scheme.url} target="_blank" rel="noopener noreferrer">
                         <LinkIcon className="mr-2 h-4 w-4" />
                         {scheme.name}

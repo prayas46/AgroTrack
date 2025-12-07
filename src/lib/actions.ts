@@ -28,6 +28,7 @@ import {
   MarketplaceFormSchema,
   PlantDoctorFormSchema,
   ProfitPlannerFormSchema,
+  AadharUploadFormSchema,
 } from "./definitions";
 
 type FormState<T> = {
@@ -36,6 +37,14 @@ type FormState<T> = {
   errors?: {
     [key: string]: string[] | undefined;
   };
+};
+
+type UploadFormState = {
+    message: string | null;
+    success: boolean;
+    errors?: {
+        [key: string]: string[] | undefined;
+    };
 };
 
 export async function getClimateRiskForecast(
@@ -166,4 +175,35 @@ export async function getSpokenText(
     console.error("Text-to-speech conversion failed:", error);
     return { error: "Failed to convert text to speech. Please try again." };
   }
+}
+
+export async function uploadAadharCard(
+    prevState: UploadFormState,
+    formData: FormData
+): Promise<UploadFormState> {
+    const validatedFields = AadharUploadFormSchema.safeParse({
+        aadharPdf: formData.get("aadharPdf"),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            message: "Invalid file. Please upload a PDF.",
+            success: false,
+            errors: validatedFields.error.flatten().fieldErrors,
+        };
+    }
+
+    try {
+        // In a real application, you would upload this file to a secure storage service.
+        // For this demo, we'll just simulate a successful upload.
+        console.log("Simulating Aadhar card upload for:", validatedFields.data.aadharPdf.name);
+        
+        // This is where you would add logic to upload to Firebase Storage, for example.
+        // await uploadBytes(storageRef, validatedFields.data.aadharPdf);
+
+        return { message: "Your Aadhar card has been uploaded successfully.", success: true };
+    } catch (error) {
+        console.error("Aadhar upload failed:", error);
+        return { message: "An unexpected error occurred during upload. Please try again.", success: false };
+    }
 }

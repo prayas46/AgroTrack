@@ -1,6 +1,8 @@
 
 'use client';
 
+import { useActionState, useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { PageHeader } from "@/components/page-header";
 import {
   Card,
@@ -8,13 +10,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Upload, Link as LinkIcon } from "lucide-react";
+import { Upload, Link as LinkIcon, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { uploadAadharCard } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
 
 const schemes = [
     {
@@ -27,8 +32,62 @@ const schemes = [
     }
 ]
 
+type UploadState = {
+  message: string | null;
+  success: boolean;
+  errors?: {
+    aadharPdf?: string[];
+  };
+}
+
+const initialState: UploadState = {
+    message: null,
+    success: false,
+};
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      <Upload className="mr-2 h-4 w-4" /> 
+      {pending ? "Uploading..." : "Upload"}
+    </Button>
+  );
+}
+
+
 export default function GovtSchemesPage() {
   const govtSchemeImage = PlaceHolderImages.find(img => img.id === 'govt-schemes-header');
+  const [state, formAction] = useActionState(uploadAadharCard, initialState);
+  const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (state.message) {
+      if (state.success) {
+        toast({
+          title: "Success",
+          description: state.message,
+        });
+        formRef.current?.reset();
+        setFileName(null);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Upload Failed",
+          description: state.message,
+        });
+      }
+    }
+  }, [state, toast]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setFileName(file ? file.name : null);
+  };
 
   return (
     <div className="space-y-8">
@@ -51,23 +110,36 @@ export default function GovtSchemesPage() {
 
       <div className="grid gap-8 md:grid-cols-2">
         <Card>
-          <CardHeader>
-            <CardTitle>Upload Aadhar Card</CardTitle>
-            <CardDescription>
-              Upload your Aadhar card in PDF format for your records.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center space-x-4">
-                <Input id="aadhar-pdf" type="file" accept="application/pdf" className="flex-1"/>
-                <Button>
-                    <Upload className="mr-2 h-4 w-4" /> Upload
-                </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Please upload a single PDF file only.
-            </p>
-          </CardContent>
+          <form action={formAction} ref={formRef}>
+            <CardHeader>
+              <CardTitle>Upload Aadhar Card</CardTitle>
+              <CardDescription>
+                Upload your Aadhar card in PDF format for your records. This is for demo purposes only.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                  <Input 
+                    id="aadhar-pdf" 
+                    name="aadharPdf"
+                    type="file" 
+                    accept="application/pdf" 
+                    required
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                  />
+                  {fileName && <p className="text-sm text-muted-foreground">Selected file: {fileName}</p>}
+                  {state.errors?.aadharPdf && (
+                    <p className="text-sm font-medium text-destructive">
+                      {state.errors.aadharPdf[0]}
+                    </p>
+                  )}
+              </div>
+            </CardContent>
+            <CardFooter>
+                <SubmitButton/>
+            </CardFooter>
+          </form>
         </Card>
 
         <Card>

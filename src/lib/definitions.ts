@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ACCEPTED_PDF_TYPES = ["application/pdf"];
+
 
 export const ClimateRiskFormSchema = z.object({
   region: z.string().min(1, "Region is required."),
@@ -34,4 +36,15 @@ export const PlantDoctorFormSchema = z.object({
         const base64 = Buffer.from(arrayBuffer).toString('base64');
         return `data:${file.type};base64,${base64}`;
     })
+});
+
+export const AadharUploadFormSchema = z.object({
+    aadharPdf: z
+    .any()
+    .refine((file) => !!file, "Aadhar card PDF is required.")
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+    .refine(
+      (file) => ACCEPTED_PDF_TYPES.includes(file?.type),
+      "Only .pdf format is supported."
+    )
 });

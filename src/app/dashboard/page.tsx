@@ -12,9 +12,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, Droplets, FileText, FlaskConical, Sprout, Store, Stethoscope, Tractor } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, Download, Droplets, FileText, FlaskConical, Sprout, Store, Stethoscope, Tractor } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 const features = [
   {
@@ -82,7 +83,30 @@ const features = [
   },
 ];
 
+const recentReports = [
+  { title: "Soil Analysis Report", date: "2024-03-01" },
+  { title: "Weekly Irrigation Report", date: "2024-02-28" },
+  { title: "Monthly Crop Yield Report", date: "2024-02-25" },
+  { title: "Equipment Maintenance Log", date: "2024-02-20" },
+];
+
 export default function DashboardPage() {
+  const { toast } = useToast();
+
+  const handleDownload = (reportTitle: string) => {
+    toast({
+      title: "Downloading Report",
+      description: `Your "${reportTitle}" is being prepared.`,
+    });
+    // In a real app, you would generate and download the actual file here.
+    setTimeout(() => {
+       toast({
+        title: "Download Ready",
+        description: `"${reportTitle}" has been downloaded.`,
+      });
+    }, 1500)
+  };
+
   return (
     <div className="space-y-8">
       <PageHeader
@@ -90,6 +114,31 @@ export default function DashboardPage() {
         description="Your autonomous partner for climate-adaptive agriculture. Plan, predict, and prosper."
       />
 
+       <Card>
+        <CardHeader>
+          <CardTitle>Recent Reports</CardTitle>
+          <CardDescription>
+            A summary of your latest generated reports.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-4">
+            {recentReports.map((report) => (
+              <li key={report.title} className="flex items-center justify-between p-3 -m-3 rounded-lg hover:bg-muted/50 transition-colors">
+                <div>
+                  <p className="font-medium text-foreground">{report.title}</p>
+                  <p className="text-sm text-muted-foreground">Generated: {report.date}</p>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => handleDownload(report.title)} aria-label={`Download ${report.title}`}>
+                  <Download className="h-5 w-5" />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
+      <h2 className="text-2xl font-bold tracking-tight pt-4">All Features</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
           <Card key={feature.title} className="flex flex-col overflow-hidden group">

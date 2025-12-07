@@ -24,8 +24,7 @@ import {
   FlaskConical,
   Menu,
   Search,
-  Settings,
-  HelpCircle,
+  Globe,
 } from 'lucide-react';
 import { Logo } from './logo';
 import { Button } from './ui/button';
@@ -36,8 +35,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 
@@ -53,6 +50,16 @@ const navItems = [
   { href: '/equipment', icon: Tractor, label: 'Equipment', emoji: '🚜' },
   { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes', emoji: '📄' },
 ] as const;
+
+const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'hi', name: 'हिन्दी' },
+    { code: 'bn', name: 'বাংলা' },
+    { code: 'ta', name: 'தமிழ்' },
+    { code: 'te', name: 'తెలుగు' },
+    { code: 'or', name: 'ଓଡ଼ିଆ' },
+    { code: 'ur', name: 'اردو' },
+];
 
 
 export default function AppSidebar() {
@@ -198,34 +205,21 @@ export default function AppSidebar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative h-9 w-9 rounded-full p-0"
-                  aria-label="More options"
+                  className="h-9 w-9"
+                  aria-label="Change language"
                 >
-                  <Settings className="h-4 w-4" />
+                  <Globe className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">AgroTrack</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      Public Access
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/help" className="cursor-pointer">
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    <span>Help & Support</span>
-                  </Link>
-                </DropdownMenuItem>
+              <DropdownMenuContent className="w-40" align="end">
+                {languages.map((lang) => (
+                    <DropdownMenuItem key={lang.code} asChild>
+                         {/* In a real app, this would trigger a language change */}
+                        <a href={`#${lang.code}`} className="cursor-pointer">
+                            {lang.name}
+                        </a>
+                    </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
 

@@ -22,6 +22,8 @@ import { Label } from '@/components/ui/label';
 import { SoilAnalysisResults } from './results';
 import type { SoilAnalysisOutput } from '@/ai/flows/soil-analysis';
 import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 type SoilAnalysisState = {
   message: string | null;
@@ -55,6 +57,7 @@ function SubmitButton() {
 export default function SoilAnalysisPage() {
   const [state, formAction] = useActionState(getSoilAnalysis, initialState);
   const { toast } = useToast();
+  const soilAnalysisImage = PlaceHolderImages.find(p => p.id === 'soil-analysis-hero');
 
   useEffect(() => {
     if (state.message && !state.data) {
@@ -72,6 +75,21 @@ export default function SoilAnalysisPage() {
         title="AI Soil Analysis"
         description="Enter your soil's composition to get an AI-powered analysis and actionable recommendations."
       />
+
+      {soilAnalysisImage && (
+         <div className="relative h-64 md:h-80 w-full overflow-hidden rounded-lg border group">
+            <Image
+                src={soilAnalysisImage.imageUrl}
+                alt={soilAnalysisImage.description}
+                fill
+                className="object-cover animate-pulse-subtle"
+                data-ai-hint={soilAnalysisImage.imageHint}
+                priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        </div>
+      )}
+
       <Card>
         <form action={formAction}>
           <CardHeader>

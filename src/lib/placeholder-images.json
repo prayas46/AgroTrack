@@ -37,6 +37,12 @@
       "imageHint": "green crops"
     },
     {
+      "id": "soil-analysis-hero",
+      "description": "Close up of hands holding rich, dark soil with a small green sprout emerging.",
+      "imageUrl": "https://images.unsplash.com/photo-1599599810694-b5b37304c847?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "soil sprout"
+    },
+    {
       "id": "govt-schemes-card",
       "description": "The Ashoka Lion Capital, a symbol of the government of India.",
       "imageUrl": "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1176&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -63,7 +69,7 @@
     {
       "id": "crop-management-card",
       "description": "A person's hands holding a small sprout in a field.",
-      "imageUrl": "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageUrl": "https://images.unsplash.com/photo-1511735643442-501348b61469?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "sprout hands"
     },
     {

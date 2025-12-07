@@ -19,6 +19,7 @@ import {
   Store,
   FileText,
   Stethoscope,
+  Droplets,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -29,6 +30,7 @@ const navItems = [
   { href: "/profit-planner", icon: DollarSign, label: "Profit Planner" },
   { href: "/marketplace", icon: Store, label: "Marketplace" },
   { href: "/plant-doctor", icon: Stethoscope, label: "Plant Doctor" },
+  { href: "/irrigation", icon: Droplets, label: "Irrigation" },
   { href: "/govt-schemes", icon: FileText, label: "Govt. Schemes" },
 ];
 

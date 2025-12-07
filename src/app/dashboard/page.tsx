@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, FileText, Store, Stethoscope } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, Droplets, FileText, Store, Stethoscope } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -46,6 +46,13 @@ const features = [
     image: PlaceHolderImages.find(img => img.id === "plant-doctor-card"),
   },
   {
+    title: "Irrigation Management",
+    description: "Monitor and control your farm's irrigation zones with real-time data and smart controls.",
+    link: "/irrigation",
+    icon: Droplets,
+    image: PlaceHolderImages.find(img => img.id === "irrigation-card"),
+  },
+  {
     title: "Government Schemes",
     description: "Access important government schemes and manage your documents like your Aadhar card.",
     link: "/govt-schemes",
@@ -62,7 +69,7 @@ export default function DashboardPage() {
         description="Your autonomous partner for climate-adaptive agriculture. Plan, predict, and prosper."
       />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
           <Card key={feature.title} className="flex flex-col overflow-hidden group">
             <div className="relative h-48 w-full overflow-hidden">

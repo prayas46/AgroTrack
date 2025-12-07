@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -14,7 +15,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import {
   ChartContainer,
   ChartLegendContent,
-  ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import type { MoistureHistory, Zone } from './data';
@@ -26,20 +26,21 @@ type MoistureChartProps = {
 };
 
 const zoneColors: { [key: number]: string } = {
-  1: 'hsl(198, 93%, 60%)', // Blue
-  2: 'hsl(142, 71%, 45%)', // Green
-  3: 'hsl(34, 97%, 64%)', // Orange
-  4: 'hsl(28, 95%, 53%)', // Darker Orange
-  5: 'hsl(316, 73%, 58%)', // Pink
-  6: 'hsl(var(--primary))', // Primary color
+  1: 'hsl(var(--chart-1))',
+  2: 'hsl(var(--chart-2))',
+  3: 'hsl(var(--chart-3))',
+  4: 'hsl(var(--chart-4))',
+  5: 'hsl(var(--chart-5))',
+  6: 'hsl(var(--primary))',
 };
 
 export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
   const chartData = useMemo(() => {
     return moistureHistory.map((historyPoint) => {
-      const dataPoint: { time: string; [key: string]: any } = { time: historyPoint.time };
+      const dataPoint: { day: string; [key: string]: any } = { day: historyPoint.day };
       zones.forEach((zone) => {
-        dataPoint[`zone_${zone.id}`] = historyPoint.readings[zone.id];
+        const zoneKey = `zone_${zone.id}`;
+        dataPoint[zoneKey] = historyPoint.readings[zoneKey];
       });
       return dataPoint;
     });
@@ -60,8 +61,8 @@ export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Moisture Trend</CardTitle>
-          <CardDescription>Real-time moisture levels across all zones.</CardDescription>
+          <CardTitle>Weekly Moisture Trend</CardTitle>
+          <CardDescription>Average moisture levels for the past week.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[300px] flex items-center justify-center text-muted-foreground">
@@ -75,8 +76,8 @@ export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Moisture Trend</CardTitle>
-        <CardDescription>Real-time moisture levels across all zones.</CardDescription>
+        <CardTitle>Weekly Moisture Trend</CardTitle>
+        <CardDescription>Average moisture levels for the past week.</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px] w-full">
@@ -100,11 +101,10 @@ export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
               </defs>
               <CartesianGrid vertical={false} />
               <XAxis
-                dataKey="time"
+                dataKey="day"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => value.slice(-5)} // Display only HH:MM
               />
               <YAxis
                 tickLine={false}

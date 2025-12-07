@@ -13,36 +13,31 @@ import {
 } from "@/components/ui/card";
 import { Play, Pause, AlertTriangle, Droplets } from "lucide-react";
 import { ZoneCard } from "./zone-card";
-import type { Zone, MoistureHistory } from "./data";
-import { irrigationZones } from "./data";
+import type { Zone } from "./data";
+import { irrigationZones, weeklyMoistureData } from "./data";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { MoistureChart } from "./moisture-chart";
 
 const TOTAL_WATER_VOLUME = 5000; // Liters
-const MAX_HISTORY_LENGTH = 20;
 
 export default function IrrigationPage() {
   const [zones, setZones] = useState<Zone[]>(irrigationZones);
   const [isSystemRunning, setIsSystemRunning] = useState(false);
   const [waterUsed, setWaterUsed] = useState(TOTAL_WATER_VOLUME * 0.45); // Start at 45% used
-  const [moistureHistory, setMoistureHistory] = useState<MoistureHistory[]>([]);
   const { toast } = useToast();
 
+  // The simulation effect is kept to make the zone cards feel interactive.
   useEffect(() => {
     const zoneInterval = setInterval(() => {
-      let newReadings: { [key: number]: number } = {};
-
       setZones(prevZones => 
         prevZones.map(zone => {
           let newMoisture;
           if (zone.status === 'active') {
-            // Moisture increases when irrigation is active
             newMoisture = Math.min(95, zone.moisture + Math.random() * 2);
           } else if (zone.status === 'critical') {
             newMoisture = zone.moisture;
           } else {
-            // Moisture decreases naturally
             newMoisture = Math.max(40, zone.moisture - Math.random() * 0.5);
           }
           
@@ -52,25 +47,10 @@ export default function IrrigationPage() {
              else if (newMoisture < 60) newStatus = 'warning';
              else newStatus = 'idle';
            }
-
-           newReadings[zone.id] = parseFloat(newMoisture.toFixed(1));
           
           return { ...zone, moisture: parseFloat(newMoisture.toFixed(1)), status: newStatus };
         })
       );
-
-       setMoistureHistory(prevHistory => {
-        const newHistoryEntry: MoistureHistory = {
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          readings: newReadings
-        };
-        const updatedHistory = [...prevHistory, newHistoryEntry];
-        if (updatedHistory.length > MAX_HISTORY_LENGTH) {
-          return updatedHistory.slice(updatedHistory.length - MAX_HISTORY_LENGTH);
-        }
-        return updatedHistory;
-      });
-
     }, 3000);
 
     return () => clearInterval(zoneInterval);
@@ -206,7 +186,7 @@ export default function IrrigationPage() {
         </CardContent>
       </Card>
 
-      <MoistureChart moistureHistory={moistureHistory} zones={zones} />
+      <MoistureChart moistureHistory={weeklyMoistureData} zones={zones} />
 
       <div className="space-y-4">
          <h2 className="text-2xl font-bold tracking-tight font-headline">Irrigation Zones</h2>

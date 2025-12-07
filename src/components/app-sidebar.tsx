@@ -84,20 +84,17 @@ export default function AppSidebar() {
         </div>
 
         <div className="md:hidden">
-          <Sidebar
-            variant="inset"
-            collapsible="offcanvas"
-          >
-            <SidebarTrigger variant="ghost" size="icon">
-              <LayoutDashboard className="h-5 w-5" />
-            </SidebarTrigger>
-            <SidebarContent>
-              <SidebarHeader>
-                <Logo />
-              </SidebarHeader>
-              {mainNav}
-            </SidebarContent>
-          </Sidebar>
+            <Sidebar collapsible="offcanvas">
+                <SidebarTrigger variant="ghost" size="icon">
+                    <LayoutDashboard className="h-5 w-5" />
+                </SidebarTrigger>
+                <SidebarContent>
+                    <SidebarHeader>
+                        <Logo />
+                    </SidebarHeader>
+                    {mainNav}
+                </SidebarContent>
+            </Sidebar>
         </div>
 
 

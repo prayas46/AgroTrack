@@ -1,10 +1,14 @@
 
 import { differenceInDays, parseISO } from "date-fns";
 
+export type CropStage = 'Seedling' | 'Vegetative' | 'Flowering' | 'Fruiting' | 'Pod Formation' | 'Tuber Initiation';
+
+export const cropStages: CropStage[] = ['Seedling', 'Vegetative', 'Flowering', 'Fruiting', 'Pod Formation', 'Tuber Initiation'];
+
 export type Crop = {
   id: number;
   name: string;
-  stage: 'Seedling' | 'Vegetative' | 'Flowering' | 'Fruiting' | 'Pod Formation' | 'Tuber Initiation';
+  stage: CropStage;
   plantedDate: string;
   harvestDate: string;
   health: number; // Percentage

@@ -1,17 +1,17 @@
 
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import {
   Sidebar,
-  SidebarHeader,
   SidebarContent,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 import {
   LayoutDashboard,
   CloudSun,
@@ -27,10 +27,10 @@ import {
   LogOut,
   Settings,
   HelpCircle,
-} from "lucide-react";
-import { Logo } from "./logo";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Button } from "./ui/button";
+} from 'lucide-react';
+import { Logo } from './logo';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,19 +38,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from './ui/dropdown-menu';
 
 const navItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/climate-risk", icon: CloudSun, label: "Climate Risk" },
-  { href: "/profit-planner", icon: DollarSign, label: "Profit Planner" },
-  { href: "/marketplace", icon: Store, label: "Marketplace" },
-  { href: "/plant-doctor", icon: Stethoscope, label: "Plant Doctor" },
-  { href: "/soil-analysis", icon: FlaskConical, label: "Soil Analysis" },
-  { href: "/irrigation", icon: Droplets, label: "Irrigation" },
-  { href: "/crop-management", icon: Sprout, label: "Crop Management" },
-  { href: "/equipment", icon: Tractor, label: "Equipment" },
-  { href: "/govt-schemes", icon: FileText, label: "Govt. Schemes" },
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { href: '/climate-risk', icon: CloudSun, label: 'Climate Risk' },
+  { href: '/profit-planner', icon: DollarSign, label: 'Profit Planner' },
+  { href: '/marketplace', icon: Store, label: 'Marketplace' },
+  { href: '/plant-doctor', icon: Stethoscope, label: 'Plant Doctor' },
+  { href: '/soil-analysis', icon: FlaskConical, label: 'Soil Analysis' },
+  { href: '/irrigation', icon: Droplets, label: 'Irrigation' },
+  { href: '/crop-management', icon: Sprout, label: 'Crop Management' },
+  { href: '/equipment', icon: Tractor, label: 'Equipment' },
+  { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes' },
 ];
 
 export default function AppSidebar() {
@@ -58,53 +58,54 @@ export default function AppSidebar() {
   const isMobile = useIsMobile();
 
   const mainNav = (
-      <SidebarMenu>
-        {navItems.map((item) => (
-          <SidebarMenuItem key={item.href}>
-            <SidebarMenuButton
-              asChild
-              isActive={pathname === item.href}
-              tooltip={isMobile ? undefined : item.label}
-            >
-              <Link href={item.href}>
-                <item.icon className="h-5 w-5" />
-                <span className="truncate">{item.label}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
+    <SidebarMenu>
+      {navItems.map((item) => (
+        <SidebarMenuItem key={item.href}>
+          <SidebarMenuButton
+            asChild
+            isActive={pathname === item.href}
+            tooltip={isMobile ? undefined : item.label}
+          >
+            <Link href={item.href}>
+              <item.icon className="h-5 w-5" />
+              <span className="truncate">{item.label}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
+    </SidebarMenu>
   );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center px-4 max-w-7xl mx-auto">
+      <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="mr-4 hidden md:flex">
           <Logo />
         </div>
 
         <div className="md:hidden">
-            <Sidebar collapsible="offcanvas">
-                <SidebarTrigger variant="ghost" size="icon">
-                    <LayoutDashboard className="h-5 w-5" />
-                </SidebarTrigger>
-                <SidebarContent>
-                    <SidebarHeader>
-                        <Logo />
-                    </SidebarHeader>
-                    {mainNav}
-                </SidebarContent>
-            </Sidebar>
+           <Sidebar collapsible="offcanvas">
+            <SidebarTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <LayoutDashboard className="h-5 w-5" />
+              </Button>
+            </SidebarTrigger>
+            <SidebarContent>
+              <SidebarHeader>
+                <Logo />
+              </SidebarHeader>
+              {mainNav}
+            </SidebarContent>
+          </Sidebar>
         </div>
 
-
-        <nav className="hidden md:flex md:items-center md:gap-6 text-sm font-medium">
+        <nav className="hidden md:flex flex-1 items-center gap-6 text-sm font-medium">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={`transition-colors hover:text-foreground/80 ${
-                pathname === item.href ? "text-foreground" : "text-foreground/60"
+                pathname === item.href ? 'text-foreground' : 'text-foreground/60'
               }`}
             >
               {item.label}
@@ -112,7 +113,7 @@ export default function AppSidebar() {
           ))}
         </nav>
 
-        <div className="flex flex-1 items-center justify-end gap-4">
+        <div className="flex items-center justify-end gap-4 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -125,16 +126,14 @@ export default function AppSidebar() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    Demo User
-                  </p>
+                  <p className="text-sm font-medium leading-none">Demo User</p>
                   <p className="text-xs leading-none text-muted-foreground">
                     farmer@agrotrack.com
                   </p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-               <DropdownMenuItem>
+              <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>

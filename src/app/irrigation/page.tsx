@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,31 @@ export default function IrrigationPage() {
   const [zones, setZones] = useState<Zone[]>(irrigationZones);
   const [isSystemRunning, setIsSystemRunning] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setZones(prevZones => 
+        prevZones.map(zone => {
+          if (zone.status === 'active' || zone.status === 'critical') {
+            return zone; // Don't simulate changes if manually controlled or in critical state
+          }
+          
+          // Simulate moisture change
+          const moistureChange = (Math.random() - 0.5) * 4;
+          const newMoisture = Math.max(40, Math.min(95, zone.moisture + moistureChange));
+          
+          // Determine status based on new moisture level
+          let newStatus: Zone['status'] = 'idle';
+          if (newMoisture > 75) newStatus = 'good';
+          else if (newMoisture < 60) newStatus = 'warning';
+          
+          return { ...zone, moisture: parseFloat(newMoisture.toFixed(1)), status: newStatus };
+        })
+      );
+    }, 3000); // Update every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleToggleSystem = () => {
     const newStatus = !isSystemRunning;

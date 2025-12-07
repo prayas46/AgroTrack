@@ -1,8 +1,7 @@
 
 'use client';
 
-import { useActionState, useEffect } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState, useEffect, FormEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -11,52 +10,77 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signup } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Loader2 } from 'lucide-react';
 import { Logo } from '@/components/logo';
+import { useAuth } from '@/firebase/auth-provider';
 
-const initialState = {
-    message: '',
-    success: false,
-    errors: {},
-};
 
-function SubmitButton() {
-    const { pending } = useFormStatus();
+function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
     return (
-        <Button className="w-full" type="submit" disabled={pending}>
-            {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {pending ? 'Creating Account...' : 'Create an account'}
+        <Button className="w-full" type="submit" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSubmitting ? 'Creating Account...' : 'Create an account'}
         </Button>
     );
 }
 
 export default function SignupPage() {
-    const [state, formAction] = useActionState(signup, initialState);
+    const { signup, user, isUserLoading } = useAuth();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
 
     const loginHeroImage = PlaceHolderImages.find((img) => img.id === 'login-hero');
-
+    
     useEffect(() => {
-        if (state.message) {
-            if (state.success) {
-                toast({
-                    title: 'Success!',
-                    description: state.message,
-                });
-                router.push('/dashboard');
-            } else {
-                toast({
-                    variant: 'destructive',
-                    title: 'Signup Failed',
-                    description: state.message,
-                });
-            }
+        if (!isUserLoading && user) {
+            router.push('/dashboard');
         }
-    }, [state, toast, router]);
+    }, [user, isUserLoading, router]);
+
+    const handleSignup = async (e: FormEvent) => {
+        e.preventDefault();
+        if (password !== confirmPassword) {
+            toast({
+                variant: 'destructive',
+                title: 'Signup Failed',
+                description: 'Passwords do not match.',
+            });
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            await signup(email, password, name);
+            toast({
+                title: 'Success!',
+                description: "Your account has been created successfully.",
+            });
+            router.push('/dashboard');
+        } catch (error: any) {
+             toast({
+                variant: 'destructive',
+                title: 'Signup Failed',
+                description: error.message || 'An unknown error occurred.',
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    
+    if (isUserLoading || user) {
+        return (
+            <div className="w-full h-screen flex items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin" />
+            </div>
+        );
+    }
     
     return (
         <div className="w-full lg:grid lg:min-h-[100vh] lg:grid-cols-2 xl:min-h-[100vh]">
@@ -69,13 +93,17 @@ export default function SignupPage() {
                             Enter your information to create an account
                         </p>
                     </div>
-                     <form action={formAction} className="grid gap-4">
+                     <form onSubmit={handleSignup} className="grid gap-4">
                          <div className="grid gap-2">
                             <Label htmlFor="name">Name</Label>
-                            <Input id="name" name="name" placeholder="John Doe" required />
-                             {state.errors?.name && (
-                                <p className="text-sm font-medium text-destructive">{state.errors.name[0]}</p>
-                            )}
+                            <Input 
+                                id="name" 
+                                name="name" 
+                                placeholder="John Doe" 
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
@@ -85,26 +113,33 @@ export default function SignupPage() {
                                 name="email"
                                 placeholder="m@example.com"
                                 required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
-                            {state.errors?.email && (
-                                <p className="text-sm font-medium text-destructive">{state.errors.email[0]}</p>
-                            )}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="password">Password</Label>
-                            <Input id="password" name="password" type="password" required />
-                            {state.errors?.password && (
-                                <p className="text-sm font-medium text-destructive">{state.errors.password[0]}</p>
-                            )}
+                            <Input 
+                                id="password" 
+                                name="password" 
+                                type="password" 
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
                          <div className="grid gap-2">
                             <Label htmlFor="confirmPassword">Confirm Password</Label>
-                            <Input id="confirmPassword" name="confirmPassword" type="password" required />
-                            {state.errors?.confirmPassword && (
-                                <p className="text-sm font-medium text-destructive">{state.errors.confirmPassword[0]}</p>
-                            )}
+                            <Input 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                type="password" 
+                                required
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
                         </div>
-                        <SubmitButton />
+                        <SubmitButton isSubmitting={isSubmitting} />
                     </form>
                     <div className="mt-4 text-center text-sm">
                         Already have an account?{' '}
@@ -128,5 +163,3 @@ export default function SignupPage() {
         </div>
     );
 }
-
-    

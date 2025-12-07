@@ -43,8 +43,8 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { cn } from '@/lib/utils';
 import React, { useMemo, useState, useEffect } from 'react';
 import { SearchDialog } from './search-dialog';
-import { logout } from '@/lib/actions';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/firebase/auth-provider';
+import { Skeleton } from './ui/skeleton';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', emoji: '📊' },
@@ -59,11 +59,37 @@ const navItems = [
   { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes', emoji: '📄' },
 ] as const;
 
+function UserAvatar() {
+  const { user, userProfile, isUserLoading } = useAuth();
+  
+  const userInitials = useMemo(() => {
+    if (!user?.displayName) return '...';
+    const names = user.displayName.split(' ');
+    if (names.length > 1) {
+      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    }
+    return user.displayName.substring(0, 2).toUpperCase();
+  }, [user]);
+
+  if (isUserLoading) {
+    return <Skeleton className="h-10 w-10 rounded-full" />;
+  }
+
+  return (
+    <Avatar className="h-10 w-10 border-2 border-background">
+      <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
+      <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+        {userInitials}
+      </AvatarFallback>
+    </Avatar>
+  )
+}
+
 export default function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
-  const { user, isUserLoading } = useAuth();
+  const { user, userProfile, logout, isUserLoading } = useAuth();
   
   const handleLogout = async () => {
     await logout();
@@ -190,10 +216,7 @@ export default function AppSidebar() {
                 </div>
                 <div className="border-t p-4">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">{userInitials}</AvatarFallback>
-                    </Avatar>
+                    <UserAvatar />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{user?.displayName || "Guest"}</p>
                       <p className="text-xs text-muted-foreground truncate">{user?.email || "Not logged in"}</p>
@@ -233,12 +256,7 @@ export default function AppSidebar() {
                   className="relative h-10 w-10 rounded-full p-0"
                   aria-label="User menu"
                 >
-                  <Avatar className="h-10 w-10 border-2 border-background">
-                    <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
-                    <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                      {isUserLoading ? '...' : userInitials}
-                    </AvatarFallback>
-                  </Avatar>
+                  <UserAvatar />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -283,5 +301,3 @@ export default function AppSidebar() {
     </>
   );
 }
-
-    

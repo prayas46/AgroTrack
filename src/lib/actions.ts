@@ -27,18 +27,14 @@ import {
   type SoilAnalysisOutput,
 } from "@/ai/flows/soil-analysis";
 import {
-  AuthFormSchema,
   ClimateRiskFormSchema,
   MarketplaceFormSchema,
   PlantDoctorFormSchema,
   AadharUploadFormSchema,
   SoilAnalysisFormSchema,
+  ProfitPlannerFormSchema,
 } from "./definitions";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase/server";
-import { cookies } from "next/headers";
-import { setDoc, doc, serverTimestamp, collection } from "firebase/firestore";
-import { db } from "@/firebase/server";
+
 
 type FormState<T> = {
   message: string | null;
@@ -48,17 +44,6 @@ type FormState<T> = {
   };
 };
 
-type AuthFormState = {
-    message: string;
-    success: boolean;
-    errors?: {
-        name?: string[];
-        email?: string[];
-        password?: string[];
-        confirmPassword?: string[];
-    };
-};
-
 type UploadFormState = {
     message: string | null;
     success: boolean;
@@ -66,87 +51,6 @@ type UploadFormState = {
         [key:string]: string[] | undefined;
     };
 };
-
-export async function login(
-    prevState: AuthFormState,
-    formData: FormData
-): Promise<AuthFormState> {
-    const validatedFields = AuthFormSchema.safeParse(Object.fromEntries(formData.entries()));
-
-    if (!validatedFields.success) {
-        return {
-            message: "Invalid form data.",
-            success: false,
-            errors: validatedFields.error.flatten().fieldErrors,
-        };
-    }
-
-    const { email, password } = validatedFields.data;
-
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const idToken = await userCredential.user.getIdToken();
-        
-        cookies().set("token", idToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 60 * 60 * 24, // 1 day
-        });
-
-        return { message: "Login successful!", success: true };
-    } catch (error: any) {
-        return { message: error.message || "Login failed.", success: false };
-    }
-}
-
-export async function signup(
-    prevState: AuthFormState,
-    formData: FormData
-): Promise<AuthFormState> {
-    const validatedFields = AuthFormSchema.safeParse(Object.fromEntries(formData.entries()));
-
-    if (!validatedFields.success) {
-        return {
-            message: "Invalid form data.",
-            success: false,
-            errors: validatedFields.error.flatten().fieldErrors,
-        };
-    }
-    
-    const { name, email, password } = validatedFields.data;
-
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const { user } = userCredential;
-
-        await setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            displayName: name,
-            email: user.email,
-            photoURL: user.photoURL,
-            role: 'Farmer', // Default role
-            createdAt: serverTimestamp(),
-        });
-
-        const idToken = await user.getIdToken();
-        cookies().set("token", idToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 60 * 60 * 24, // 1 day
-        });
-
-        return { message: "Signup successful!", success: true };
-    } catch (error: any) {
-        return { message: error.message || "Signup failed.", success: false };
-    }
-}
-
-export async function logout() {
-    cookies().delete("token");
-}
-
 
 export async function getClimateRiskForecast(
   prevState: FormState<ClimateRiskForecastOutput>,
@@ -340,5 +244,3 @@ export async function getSoilAnalysis(
     };
   }
 }
-
-    

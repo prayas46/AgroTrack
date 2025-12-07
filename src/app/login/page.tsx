@@ -1,8 +1,7 @@
 
 'use client';
 
-import { useActionState, useEffect } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState, useEffect, FormEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -11,52 +10,66 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { login } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Loader2 } from 'lucide-react';
 import { Logo } from '@/components/logo';
+import { useAuth } from '@/firebase/auth-provider';
 
-const initialState = {
-    message: '',
-    success: false,
-    errors: {},
-};
-
-function SubmitButton() {
-    const { pending } = useFormStatus();
+function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
     return (
-        <Button className="w-full" type="submit" disabled={pending}>
-            {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {pending ? 'Logging in...' : 'Login'}
+        <Button className="w-full" type="submit" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isSubmitting ? 'Logging in...' : 'Login'}
         </Button>
     );
 }
 
 export default function LoginPage() {
-    const [state, formAction] = useActionState(login, initialState);
+    const { login, user, isUserLoading } = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
 
     const loginHeroImage = PlaceHolderImages.find((img) => img.id === 'login-hero');
 
     useEffect(() => {
-        if (state.message) {
-            if (state.success) {
-                toast({
-                    title: 'Success!',
-                    description: state.message,
-                });
-                router.push('/dashboard');
-            } else {
-                toast({
-                    variant: 'destructive',
-                    title: 'Login Failed',
-                    description: state.message,
-                });
-            }
+        if (!isUserLoading && user) {
+            router.push('/dashboard');
         }
-    }, [state, toast, router]);
+    }, [user, isUserLoading, router]);
+
+
+    const handleLogin = async (e: FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            await login(email, password);
+            toast({
+                title: 'Success!',
+                description: "You have successfully logged in.",
+            });
+            router.push('/dashboard');
+        } catch (error: any) {
+            toast({
+                variant: 'destructive',
+                title: 'Login Failed',
+                description: error.message || 'An unknown error occurred.',
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+    
+    if (isUserLoading || user) {
+        return (
+            <div className="w-full h-screen flex items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin" />
+            </div>
+        );
+    }
 
     return (
         <div className="w-full lg:grid lg:min-h-[100vh] lg:grid-cols-2 xl:min-h-[100vh]">
@@ -69,7 +82,7 @@ export default function LoginPage() {
                             Enter your email below to login to your account
                         </p>
                     </div>
-                    <form action={formAction} className="grid gap-4">
+                    <form onSubmit={handleLogin} className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input
@@ -78,10 +91,9 @@ export default function LoginPage() {
                                 name="email"
                                 placeholder="m@example.com"
                                 required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
-                            {state.errors?.email && (
-                                <p className="text-sm font-medium text-destructive">{state.errors.email[0]}</p>
-                            )}
                         </div>
                         <div className="grid gap-2">
                             <div className="flex items-center">
@@ -93,12 +105,16 @@ export default function LoginPage() {
                                     Forgot your password?
                                 </Link>
                             </div>
-                            <Input id="password" name="password" type="password" required />
-                             {state.errors?.password && (
-                                <p className="text-sm font-medium text-destructive">{state.errors.password[0]}</p>
-                            )}
+                            <Input 
+                                id="password" 
+                                name="password" 
+                                type="password" 
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
-                        <SubmitButton />
+                        <SubmitButton isSubmitting={isSubmitting} />
                     </form>
                     <div className="mt-4 text-center text-sm">
                         Don&apos;t have an account?{' '}
@@ -122,5 +138,3 @@ export default function LoginPage() {
         </div>
     );
 }
-
-    

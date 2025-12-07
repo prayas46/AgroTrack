@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/hooks/use-auth";
+import { FirebaseClientProvider } from "@/firebase/client-provider";
 import AppSidebar from "@/components/app-sidebar";
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function RootLayout({
         />
       </head>
       <body className={cn("font-body antialiased")}>
-        <AuthProvider>
+        <FirebaseClientProvider>
           <div className="relative flex min-h-screen w-full flex-col">
             <AppSidebar />
             <main className="flex-1">
@@ -37,10 +37,8 @@ export default function RootLayout({
             </main>
           </div>
           <Toaster />
-        </AuthProvider>
+        </FirebaseClientProvider>
       </body>
     </html>
   );
 }
-
-    

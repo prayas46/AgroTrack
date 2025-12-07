@@ -5,22 +5,6 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const ACCEPTED_PDF_TYPES = ["application/pdf"];
 
-export const AuthFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }).optional(),
-  email: z.string().email({ message: "Please enter a valid email." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-  confirmPassword: z.string().optional(),
-}).refine(data => {
-    if (data.confirmPassword && data.password !== data.confirmPassword) {
-        return false;
-    }
-    return true;
-}, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-});
-
-
 export const ClimateRiskFormSchema = z.object({
   region: z.string().min(1, "Region is required."),
   days: z.coerce.number({ invalid_type_error: "Please select a forecast period."}).min(7, "Please select a forecast period."),
@@ -73,5 +57,3 @@ export const SoilAnalysisFormSchema = z.object({
     moisture: z.coerce.number().min(0).max(100, "Moisture must be between 0 and 100."),
     organicMatter: z.coerce.number().min(0).max(100, "Organic matter must be between 0 and 100."),
 });
-
-    

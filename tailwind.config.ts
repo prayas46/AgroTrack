@@ -56,11 +56,11 @@ export default {
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {
-          '1': 'hsl(198, 93%, 60%)',
-          '2': 'hsl(142, 71%, 45%)',
-          '3': 'hsl(34, 97%, 64%)',
-          '4': 'hsl(28, 95%, 53%)',
-          '5': 'hsl(316, 73%, 58%)',
+          '1': 'hsl(200, 95%, 55%)',
+          '2': 'hsl(210, 90%, 65%)',
+          '3': 'hsl(190, 85%, 60%)',
+          '4': 'hsl(220, 80%, 70%)',
+          '5': 'hsl(180, 75%, 50%)',
         },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',

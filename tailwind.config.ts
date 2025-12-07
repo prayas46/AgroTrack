@@ -1,4 +1,3 @@
-
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -58,8 +57,8 @@ export default {
         ring: 'hsl(var(--ring))',
         chart: {
           '1': 'hsl(198, 93%, 60%)',
-          '2': 'hsl(34, 97%, 64%)',
-          '3': 'hsl(142, 71%, 45%)',
+          '2': 'hsl(142, 71%, 45%)',
+          '3': 'hsl(34, 97%, 64%)',
           '4': 'hsl(28, 95%, 53%)',
           '5': 'hsl(316, 73%, 58%)',
         },

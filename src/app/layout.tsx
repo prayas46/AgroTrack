@@ -29,17 +29,15 @@ export default function RootLayout({
       </head>
       <body className={cn("font-body antialiased")}>
         <FirebaseClientProvider>
-          <SidebarProvider>
-            <div className="relative flex min-h-screen flex-col bg-background">
-              <AppSidebar />
-              <main className="flex-1">
-                <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
-                  {children}
-                </div>
-              </main>
-            </div>
-            <Toaster />
-          </SidebarProvider>
+          <div className="relative flex min-h-screen w-full flex-col">
+            <AppSidebar />
+            <main className="flex-1">
+              <div className="container max-w-7xl p-4 sm:p-6 lg:p-8">
+                {children}
+              </div>
+            </main>
+          </div>
+          <Toaster />
         </FirebaseClientProvider>
       </body>
     </html>

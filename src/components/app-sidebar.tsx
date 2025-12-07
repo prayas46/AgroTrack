@@ -4,14 +4,6 @@
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-} from '@/components/ui/sidebar';
-import {
   Sheet,
   SheetContent,
   SheetHeader,
@@ -32,9 +24,9 @@ import {
   LogOut,
   Settings,
   HelpCircle,
+  Menu,
 } from 'lucide-react';
 import { Logo } from './logo';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -44,6 +36,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { Avatar, AvatarFallback } from './ui/avatar';
+import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -60,75 +54,82 @@ const navItems = [
 
 export default function AppSidebar() {
   const pathname = usePathname();
-  const isMobile = useIsMobile();
 
   const mainNav = (
-    <SidebarMenu>
+    <nav className="flex flex-col gap-1 p-2">
       {navItems.map((item) => (
-        <SidebarMenuItem key={item.href}>
-          <SidebarMenuButton
-            asChild
-            isActive={pathname === item.href}
-            tooltip={isMobile ? undefined : item.label}
-          >
-            <Link href={item.href}>
-              <item.icon className="h-5 w-5" />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        <Button
+          key={item.href}
+          asChild
+          variant={pathname === item.href ? 'secondary' : 'ghost'}
+          className="justify-start"
+        >
+          <Link href={item.href}>
+            <item.icon className="mr-2 h-4 w-4" />
+            {item.label}
+          </Link>
+        </Button>
       ))}
-    </SidebarMenu>
+    </nav>
   );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="container flex h-16 max-w-7xl items-center">
         <div className="mr-4 hidden md:flex">
           <Logo />
         </div>
 
+        {/* Mobile Nav */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
-                <LayoutDashboard className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
-              <SheetHeader className='p-2'>
+            <SheetContent side="left" className="w-60 p-0">
+              <SheetHeader className="border-b p-4">
                 <Logo />
               </SheetHeader>
-              <div className='p-2'>
               {mainNav}
-              </div>
             </SheetContent>
           </Sheet>
         </div>
 
-        <nav className="hidden md:flex flex-1 items-center gap-6 text-sm font-medium">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`transition-colors hover:text-foreground/80 ${
-                pathname === item.href ? 'text-foreground' : 'text-foreground/60'
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex flex-1 items-center gap-2 text-sm font-medium">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'relative px-3 py-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground',
+                  isActive ? 'bg-accent text-accent-foreground' : 'text-foreground/60'
+                )}
+              >
+                {item.label}
+                {isActive && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-primary rounded-full" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="flex items-center justify-end gap-4 ml-auto">
+        <div className="flex flex-1 items-center justify-end gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="secondary"
-                size="icon"
-                className="relative h-8 w-8 rounded-full"
+                variant="ghost"
+                className="relative h-10 w-10 rounded-full"
               >
-                <User className="h-5 w-5" />
+                <Avatar className="h-9 w-9">
+                    <AvatarFallback className='bg-primary text-primary-foreground'>U</AvatarFallback>
+                </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>

@@ -88,10 +88,8 @@ export default function AppSidebar() {
             variant="inset"
             collapsible="offcanvas"
           >
-            <SidebarTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <LayoutDashboard className="h-5 w-5" />
-                </Button>
+            <SidebarTrigger variant="ghost" size="icon">
+              <LayoutDashboard className="h-5 w-5" />
             </SidebarTrigger>
             <SidebarContent>
               <SidebarHeader>

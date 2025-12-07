@@ -40,11 +40,10 @@ export const PlantDoctorFormSchema = z.object({
 
 export const AadharUploadFormSchema = z.object({
     aadharPdf: z
-    .any()
-    .refine((file) => !!file, "Aadhar card PDF is required.")
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+    .instanceof(File, { message: "Aadhar card PDF is required."})
+    .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
     .refine(
-      (file) => ACCEPTED_PDF_TYPES.includes(file?.type),
+      (file) => ACCEPTED_PDF_TYPES.includes(file.type),
       "Only .pdf format is supported."
     )
 });

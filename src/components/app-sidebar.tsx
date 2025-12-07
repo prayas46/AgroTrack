@@ -122,7 +122,7 @@ export default function AppSidebar() {
             )}
             aria-current={active ? 'page' : undefined}
           >
-            <span role="img" aria-label={item.label}>{item.emoji}</span>
+            <span role="img" aria-label={item.label} suppressHydrationWarning>{item.emoji}</span>
             <span className="whitespace-nowrap">{item.label}</span>
             {active && (
               <span 
@@ -205,36 +205,6 @@ export default function AppSidebar() {
             >
               <Search className="h-4 w-4" />
             </Button>
-
-            {/* Notifications */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative h-9 w-9"
-                  aria-label="Notifications"
-                >
-                  <Bell className="h-4 w-4" />
-                  <Badge 
-                    className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center"
-                    variant="destructive"
-                  >
-                    3
-                  </Badge>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80">
-                <DropdownMenuLabel>Notifications (3)</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <div className="max-h-80 overflow-y-auto">
-                  {/* Notification items would go here */}
-                  <div className="p-3 text-sm text-muted-foreground text-center">
-                    Your notifications will appear here
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             {/* User Menu */}
             <DropdownMenu>

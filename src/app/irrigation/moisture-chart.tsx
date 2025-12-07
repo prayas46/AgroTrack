@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartContainer,
+  ChartLegend,
   ChartLegendContent,
   ChartTooltipContent,
 } from '@/components/ui/chart';
@@ -114,7 +115,7 @@ export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
                 tickFormatter={(value) => `${value}%`}
               />
               <Tooltip cursor={true} content={<ChartTooltipContent indicator="dot" />} />
-              <Legend content={<ChartLegendContent />} />
+              <ChartLegend content={<ChartLegendContent />} />
               {zones.map((zone) => (
                 <Area
                   key={zone.id}

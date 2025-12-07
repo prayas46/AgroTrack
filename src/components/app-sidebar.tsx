@@ -40,16 +40,16 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/climate-risk', icon: CloudSun, label: 'Climate Risk' },
-  { href: '/profit-planner', icon: DollarSign, label: 'Profit Planner' },
-  { href: '/marketplace', icon: Store, label: 'Marketplace' },
-  { href: '/plant-doctor', icon: Stethoscope, label: 'Plant Doctor' },
-  { href: '/soil-analysis', icon: FlaskConical, label: 'Soil Analysis' },
-  { href: '/irrigation', icon: Droplets, label: 'Irrigation' },
-  { href: '/crop-management', icon: Sprout, label: 'Crop Management' },
-  { href: '/equipment', icon: Tractor, label: 'Equipment' },
-  { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes' },
+  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', emoji: '📊' },
+  { href: '/climate-risk', icon: CloudSun, label: 'Climate Risk', emoji: '🌦️' },
+  { href: '/profit-planner', icon: DollarSign, label: 'Profit Planner', emoji: '💰' },
+  { href: '/marketplace', icon: Store, label: 'Marketplace', emoji: '🛒' },
+  { href: '/plant-doctor', icon: Stethoscope, label: 'Plant Doctor', emoji: '🩺' },
+  { href: '/soil-analysis', icon: FlaskConical, label: 'Soil Analysis', emoji: '🧪' },
+  { href: '/irrigation', icon: Droplets, label: 'Irrigation', emoji: '💧' },
+  { href: '/crop-management', icon: Sprout, label: 'Crop Management', emoji: '🌱' },
+  { href: '/equipment', icon: Tractor, label: 'Equipment', emoji: '🚜' },
+  { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes', emoji: '📄' },
 ];
 
 export default function AppSidebar() {
@@ -107,10 +107,11 @@ export default function AppSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'relative px-3 py-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground',
+                  'relative px-3 py-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground flex items-center gap-2',
                   isActive ? 'bg-accent text-accent-foreground' : 'text-foreground/60'
                 )}
               >
+                <span>{item.emoji}</span>
                 {item.label}
                 {isActive && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-primary rounded-full" />

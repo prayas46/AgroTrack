@@ -38,6 +38,7 @@ import {
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { cn } from '@/lib/utils';
+import React from 'react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', emoji: '📊' },
@@ -111,11 +112,13 @@ export default function AppSidebar() {
                   isActive ? 'bg-accent text-accent-foreground' : 'text-foreground/60'
                 )}
               >
-                <span>{item.emoji}</span>
-                {item.label}
-                {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-primary rounded-full" />
-                )}
+                <>
+                  <span>{item.emoji}</span>
+                  {item.label}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-primary rounded-full" />
+                  )}
+                </>
               </Link>
             );
           })}

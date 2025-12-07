@@ -4,79 +4,145 @@
       "id": "dashboard-hero",
       "description": "A beautiful wide shot of a lush green farm at sunrise, with rows of crops stretching into the distance.",
       "imageUrl": "https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "farm sunrise"
+      "imageHint": "farm sunrise",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#4CAF50"
     },
     {
       "id": "climate-risk-card",
       "description": "A visual representation of weather patterns over a field.",
-      "imageUrl": "https://images.unsplash.com/photo-1711397651462-3b2a22f5cfc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3ZWF0aGVyJTIwYWdyaWN1bHR1cmV8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "weather agriculture"
+      "imageUrl": "https://images.unsplash.com/photo-1711397651462-3b2a22f5cfc8?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "weather agriculture",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "4:3",
+      "fallbackColor": "#2196F3"
     },
     {
       "id": "profit-planner-card",
       "description": "A tractor working in a field, representing agricultural profitability.",
       "imageUrl": "https://images.unsplash.com/photo-1634850065207-4b412afc4b25?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "tractor farming"
+      "imageHint": "tractor farming",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#FF9800"
     },
     {
       "id": "marketplace-card",
       "description": "A bustling market scene with fresh produce.",
-      "imageUrl": "https://images.unsplash.com/photo-1609056615079-1f5f4c909a7f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtYXJrZXQlMjBidXNpbmVzc3xlbnwwfHx8fDE3NjQ5MzQzMTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "market business"
+      "imageUrl": "https://images.unsplash.com/photo-1609056615079-1f5f4c909a7f?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "market business",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "4:3",
+      "fallbackColor": "#9C27B0"
     },
     {
       "id": "plant-doctor-card",
       "description": "A close-up of a hand holding a magnifying glass over a leaf.",
-      "imageUrl": "https://images.unsplash.com/photo-1758524054151-46fd7b2ac71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGxhbnQlMjBpbnNwZWN0aW9ufGVufDB8fHx8MTc2NDkzNjk4OHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "plant inspection"
+      "imageUrl": "https://images.unsplash.com/photo-1758524054151-46fd7b2ac71c?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "plant inspection",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "1:1",
+      "fallbackColor": "#4CAF50"
     },
     {
       "id": "soil-analysis-card",
       "description": "Lush green crops growing in a field.",
       "imageUrl": "https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "green crops"
+      "imageHint": "green crops",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "4:3",
+      "fallbackColor": "#8BC34A"
     },
     {
       "id": "soil-analysis-hero",
       "description": "A tractor plowing a field, preparing the soil for planting.",
       "imageUrl": "https://images.unsplash.com/photo-1618212624319-3cd9681707e2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "tractor soil"
+      "imageHint": "tractor soil",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#795548"
     },
     {
       "id": "govt-schemes-card",
       "description": "The Ashoka Lion Capital, a symbol of the government of India.",
       "imageUrl": "https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=1176&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "government emblem"
+      "imageHint": "government emblem",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "4:3",
+      "fallbackColor": "#FF5722"
     },
     {
       "id": "govt-schemes-header",
       "description": "An Indian farmer working in a field, representing agricultural government support.",
-      "imageUrl": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-      "imageHint": "indian farmer"
+      "imageUrl": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "indian farmer",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#3F51B5"
     },
     {
       "id": "risk-map",
       "description": "A satellite map showing various regions with color-coded risk overlays.",
-      "imageUrl": "https://images.unsplash.com/photo-1536430291604-5e07b05f0592?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzYXRlbGxpdGUlMjBtYXB8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "satellite map"
+      "imageUrl": "https://images.unsplash.com/photo-1536430291604-5e07b05f0592?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "satellite map",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#607D8B"
     },
     {
       "id": "irrigation-card",
       "description": "An automated irrigation system watering a field of crops.",
-      "imageUrl": "https://plus.unsplash.com/premium_photo-1661825536186-19606cd9a0f1?q=80&w=719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "irrigation system"
+      "imageUrl": "https://plus.unsplash.com/premium_photo-1661825536186-19606cd9a0f1?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "irrigation system",
+      "credit": "Unsplash Premium / @photographer",
+      "aspectRatio": "4:3",
+      "fallbackColor": "#00BCD4"
     },
     {
       "id": "crop-management-card",
       "description": "A person's hands holding a small sprout in a field.",
-      "imageUrl": "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "sprout hands"
+      "imageUrl": "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "sprout hands",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "4:3",
+      "fallbackColor": "#8BC34A"
     },
     {
       "id": "equipment-card",
       "description": "A modern tractor in a field at sunset.",
-      "imageUrl": "https://plus.unsplash.com/premium_photo-1664301163726-78773dc77bfd?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "farm tractor"
+      "imageUrl": "https://plus.unsplash.com/premium_photo-1664301163726-78773dc77bfd?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "farm tractor",
+      "credit": "Unsplash Premium / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#FF9800"
+    },
+    {
+      "id": "profile-header",
+      "description": "A farmer standing in a field, looking at the horizon.",
+      "imageUrl": "https://images.unsplash.com/photo-1519085390158-d4e17c07c5b9?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "farmer field",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#4CAF50"
+    },
+    {
+      "id": "login-hero",
+      "description": "A beautiful agricultural landscape with mountains in the background.",
+      "imageUrl": "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "agricultural landscape",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#4CAF50"
+    },
+    {
+      "id": "report-header",
+      "description": "A farmer checking a tablet while standing in a field.",
+      "imageUrl": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "farmer technology",
+      "credit": "Unsplash / @photographer",
+      "aspectRatio": "16:9",
+      "fallbackColor": "#2196F3"
     }
   ]
 }

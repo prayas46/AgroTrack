@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -56,11 +57,12 @@ export default {
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {
-          '1': 'hsl(200, 95%, 55%)',
-          '2': 'hsl(210, 90%, 65%)',
-          '3': 'hsl(190, 85%, 60%)',
-          '4': 'hsl(220, 80%, 70%)',
-          '5': 'hsl(180, 75%, 50%)',
+          '1': 'hsl(200, 95%, 55%)', // Bright Blue
+          '2': 'hsl(210, 90%, 65%)', // Sky Blue
+          '3': 'hsl(190, 85%, 60%)', // Cyan-Blue
+          '4': 'hsl(220, 80%, 70%)', // Lavender Blue
+          '5': 'hsl(180, 75%, 50%)', // Teal Blue
+          '6': 'hsl(240, 80%, 75%)', // Royal Blue
         },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',

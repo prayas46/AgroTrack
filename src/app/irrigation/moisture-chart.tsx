@@ -5,7 +5,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -26,37 +25,29 @@ type MoistureChartProps = {
   zones: Zone[];
 };
 
-const zoneColors: { [key: number]: string } = {
-  1: 'hsl(var(--chart-1))',
-  2: 'hsl(var(--chart-2))',
-  3: 'hsl(var(--chart-3))',
-  4: 'hsl(var(--chart-4))',
-  5: 'hsl(var(--chart-5))',
-  6: 'hsl(var(--primary))',
-};
-
 export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
-  const chartData = useMemo(() => {
-    return moistureHistory.map((historyPoint) => {
-      const dataPoint: { day: string; [key: string]: any } = { day: historyPoint.day };
-      zones.forEach((zone) => {
-        const zoneKey = `zone_${zone.id}`;
-        dataPoint[zoneKey] = historyPoint.readings[zoneKey];
-      });
-      return dataPoint;
-    });
-  }, [moistureHistory, zones]);
+    const chartConfig = useMemo(() => {
+        const config: any = {};
+        zones.forEach((zone) => {
+            config[`zone_${zone.id}`] = {
+                label: zone.name,
+                color: `hsl(var(--chart-${zone.id}))`,
+            };
+        });
+        return config;
+    }, [zones]);
 
-  const chartConfig = useMemo(() => {
-    const config: any = {};
-    zones.forEach((zone) => {
-      config[`zone_${zone.id}`] = {
-        label: zone.name,
-        color: zoneColors[zone.id] || 'hsl(var(--foreground))',
-      };
-    });
-    return config;
-  }, [zones]);
+    const chartData = useMemo(() => {
+        return moistureHistory.map((historyPoint) => {
+        const dataPoint: { day: string; [key: string]: any } = { day: historyPoint.day };
+        zones.forEach((zone) => {
+            const zoneKey = `zone_${zone.id}`;
+            dataPoint[zoneKey] = historyPoint.readings[zoneKey];
+        });
+        return dataPoint;
+        });
+    }, [moistureHistory, zones]);
+
 
   if (!moistureHistory.length) {
     return (

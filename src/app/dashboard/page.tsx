@@ -167,7 +167,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Welcome to AgroCast"
+        title="Welcome to AgroTrack"
         description="Your autonomous partner for climate-adaptive agriculture. Plan, predict, and prosper."
       />
 
@@ -278,3 +278,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

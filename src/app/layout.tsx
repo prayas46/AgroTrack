@@ -8,7 +8,7 @@ import AppSidebar from "@/components/app-sidebar";
 import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export const metadata: Metadata = {
-  title: "AgroCast",
+  title: "AgroTrack",
   description: "Autonomous Climate-Adaptive Agriculture Planner & Marketplace",
 };
 
@@ -43,3 +43,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+    

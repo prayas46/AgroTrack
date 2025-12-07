@@ -118,6 +118,7 @@ export default function AppSidebar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="secondary"
+                size="icon"
                 className="relative h-8 w-8 rounded-full"
               >
                 <User className="h-5 w-5" />

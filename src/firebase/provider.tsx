@@ -4,9 +4,8 @@
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo } from 'react';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
-import { Auth, User } from 'firebase/auth';
+import { Auth } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import { AuthProvider } from './auth-provider';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -39,10 +38,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
   return (
     <FirebaseContext.Provider value={contextValue}>
-      <AuthProvider>
-        <FirebaseErrorListener />
-        {children}
-      </AuthProvider>
+      <FirebaseErrorListener />
+      {children}
     </FirebaseContext.Provider>
   );
 };

@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "UserProfile": {
@@ -368,10 +369,7 @@
     }
   },
   "auth": {
-    "providers": [
-      "password",
-      "anonymous"
-    ]
+    "providers": []
   },
   "firestore": {
     "structure": [
@@ -573,5 +571,3 @@
     "reasoning": "The Firestore structure is designed to support AgroTrack's core features—AI-based climate risk forecasts, profit prediction engine, blockchain-backed farm digital passport, and an agro-match marketplace. The structure prioritizes authorization independence and simplifies security rules. Path-based ownership is preferred where applicable.\n\nFarmers are at the root of the data structure, owning farms, climate risk forecasts, profit predictions, harvest batches, marketplace deals, and real-time data reports. This ensures that data access can be easily controlled based on the farmer's ID. By nesting data under the `/farmers/{farmerId}` path, we enforce clear ownership and avoid the need for complex `get()` calls in the security rules.\n\nAuthorization Independence (CRITICAL):  Denormalization is used where collaborative access is required or when data needs to be accessed outside the farmer's scope. For example, if certain marketplace deals need to be visible to multiple parties, the deal document will include a `members` map to specify the roles and permissions of different users.\n\nQAPs (Rules are not Filters): Structural Segregation is employed to ensure secure `list` operations. Private data is stored under the farmer's path (e.g., `/farmers/{farmerId}/farms/{farmId}`), while potentially public data, such as aggregated marketplace statistics, can be stored in separate collections with different security rules.\n\nReal-time data reports are also nested under farms. Given the user's feedback to handle the real-time data reports, the structure is prepared to handle frequent updates without compromising security. RealTimeDataReport documents are nested under the farm which allows to query for recent reports easily."
   }
 }
-
-    

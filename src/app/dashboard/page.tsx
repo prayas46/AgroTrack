@@ -12,13 +12,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, Download, Droplets, FileText, FlaskConical, Sprout, Store, Stethoscope, Tractor, Loader2 } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, Download, Droplets, FileText, FlaskConical, Sprout, Store, Stethoscope, Tractor } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { useMemo } from "react";
 import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
-import { collection, query, where, orderBy, limit } from "firebase/firestore";
+import { collection, query, orderBy, limit } from "firebase/firestore";
 import type { Report } from "@/lib/reports";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -111,19 +111,18 @@ function ReportSkeleton() {
 
 export default function DashboardPage() {
   const { toast } = useToast();
-  const { firestore, user, isUserLoading } = useFirebase();
+  const { firestore } = useFirebase();
 
   const dashboardHeroImage = PlaceHolderImages.find(img => img.id === 'dashboard-hero');
 
   const reportsQuery = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    if (!firestore) return null;
     return query(
       collection(firestore, 'reports'),
-      where('userId', '==', user.uid),
       orderBy('createdAt', 'desc'),
       limit(5)
     );
-  }, [firestore, user]);
+  }, [firestore]);
 
   const { data: recentReports, isLoading: areReportsLoading } = useCollection<Report>(reportsQuery);
 
@@ -233,12 +232,12 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Recent Reports</CardTitle>
           <CardDescription>
-            A summary of your latest generated reports.
+            A summary of the latest generated reports.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4" role="list">
-             {isUserLoading || areReportsLoading ? (
+             {areReportsLoading ? (
                 <>
                   <ReportSkeleton/>
                   <ReportSkeleton/>
@@ -278,5 +277,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    

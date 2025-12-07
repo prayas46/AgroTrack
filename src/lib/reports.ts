@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -15,10 +16,10 @@ export type ReportType = 'Climate Risk' | 'Soil Analysis' | 'Profit Planner' | '
 
 export interface Report {
   id: string;
-  userId: string;
+  userId: string; // Keep for potential future use, but will be a generic value now
   title: string;
   type: ReportType;
-  content?: Record<string, any>; // Optional detailed content
+  content?: Record<string, any>;
   metadata?: {
     location?: string;
     cropType?: string;
@@ -40,44 +41,34 @@ export interface CreateReportData {
 }
 
 /**
- * Creates a new report document in Firestore for the current user.
- * Returns a promise that resolves with the created report ID or rejects with an error.
+ * Creates a new report document in Firestore.
+ * This version does not require a specific user and assigns reports to a generic 'public' user.
  *
  * @param firestore - The Firestore database instance.
- * @param userId - The ID of the currently authenticated user.
  * @param reportData - The report data to be saved.
  * @returns Promise<string> - The ID of the created report document.
- * @throws {Error} If user is not authenticated or Firestore operation fails.
+ * @throws {Error} If Firestore operation fails.
  */
 export async function createReport(
   firestore: Firestore,
-  userId: string,
   reportData: CreateReportData
 ): Promise<string> {
-  // Validate inputs
   if (!firestore) {
     throw new Error('Firestore instance is required');
   }
-  
-  if (!userId) {
-    throw new Error('User must be authenticated to create a report.');
-  }
-
   if (!reportData.title?.trim()) {
     throw new Error('Report title is required.');
   }
-
   if (!reportData.type) {
     throw new Error('Report type is required.');
   }
 
   try {
-    // Create a reference to a new document in the 'reports' collection
     const newReportRef = doc(collection(firestore, 'reports'));
 
     const newReport: Omit<Report, 'createdAt' | 'id'> & { createdAt: any, id: string } = {
       id: newReportRef.id,
-      userId: userId,
+      userId: 'public_user', // Assign to a generic ID
       title: reportData.title.trim(),
       type: reportData.type,
       content: reportData.content || {},
@@ -87,18 +78,13 @@ export async function createReport(
       updatedAt: serverTimestamp(),
     };
 
-    // Save the report to Firestore
     await setDoc(newReportRef, newReport);
-
-    console.log('Report created successfully:', newReportRef.id);
-    
-    // Return the report ID for further reference
+    console.log('Public report created successfully:', newReportRef.id);
     return newReportRef.id;
 
   } catch (error: any) {
     console.error('Error creating report:', error);
     
-    // Handle Firestore permission errors more robustly
     if (error.code === 'permission-denied' || error.code === 'permission_denied') {
       const permissionError = new FirestorePermissionError({
         path: `reports/${doc(collection(firestore, 'reports')).id}`,
@@ -110,7 +96,6 @@ export async function createReport(
       throw permissionError;
     }
     
-    // Re-throw a more generic error for the caller to handle
     throw new Error(`Failed to create report: ${error.message || 'Unknown error'}`);
   }
 }

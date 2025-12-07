@@ -1,7 +1,7 @@
 
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   Sheet,
@@ -22,15 +22,16 @@ import {
   Sprout,
   Tractor,
   FlaskConical,
-  User,
-  LogOut,
-  Settings,
-  HelpCircle,
   Menu,
   Search,
+  Settings,
+  HelpCircle,
 } from 'lucide-react';
 import { Logo } from './logo';
 import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
+import React, { useMemo, useState, useEffect } from 'react';
+import { SearchDialog } from './search-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,12 +40,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { cn } from '@/lib/utils';
-import React, { useMemo, useState, useEffect } from 'react';
-import { SearchDialog } from './search-dialog';
-import { useAuth } from '@/firebase/auth-provider';
-import { Skeleton } from './ui/skeleton';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', emoji: '📊' },
@@ -59,52 +54,11 @@ const navItems = [
   { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes', emoji: '📄' },
 ] as const;
 
-function UserAvatar() {
-  const { user, userProfile, isUserLoading } = useAuth();
-  
-  const userInitials = useMemo(() => {
-    if (!user?.displayName) return '...';
-    const names = user.displayName.split(' ');
-    if (names.length > 1) {
-      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-    }
-    return user.displayName.substring(0, 2).toUpperCase();
-  }, [user]);
-
-  if (isUserLoading) {
-    return <Skeleton className="h-10 w-10 rounded-full" />;
-  }
-
-  return (
-    <Avatar className="h-10 w-10 border-2 border-background">
-      <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
-      <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-        {userInitials}
-      </AvatarFallback>
-    </Avatar>
-  )
-}
 
 export default function AppSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
-  const { user, userProfile, logout, isUserLoading } = useAuth();
   
-  const handleLogout = async () => {
-    await logout();
-    router.push('/login');
-  };
-
-  const userInitials = useMemo(() => {
-    if (!user?.displayName) return '...';
-    const names = user.displayName.split(' ');
-    if (names.length > 1) {
-      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-    }
-    return user.displayName.substring(0, 2).toUpperCase();
-  }, [user]);
-
   // Memoize active path check for performance
   const isActivePath = useMemo(() => {
     return (href: string) => {
@@ -214,15 +168,6 @@ export default function AppSidebar() {
                 <div className="flex-1 overflow-y-auto">
                   {mainNav}
                 </div>
-                <div className="border-t p-4">
-                  <div className="flex items-center gap-3">
-                    <UserAvatar />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{user?.displayName || "Guest"}</p>
-                      <p className="text-xs text-muted-foreground truncate">{user?.email || "Not logged in"}</p>
-                    </div>
-                  </div>
-                </div>
               </SheetContent>
             </Sheet>
             
@@ -247,34 +192,28 @@ export default function AppSidebar() {
             >
               <Search className="h-4 w-4" />
             </Button>
-
-            {/* User Menu */}
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-10 w-10 rounded-full p-0"
-                  aria-label="User menu"
+                  size="icon"
+                  className="relative h-9 w-9 rounded-full p-0"
+                  aria-label="More options"
                 >
-                  <UserAvatar />
+                  <Settings className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{isUserLoading ? "Loading..." : user?.displayName}</p>
-                    <p className="text-xs leading-none text-muted-foreground truncate">
-                      {isUserLoading ? "" : user?.email}
+                    <p className="text-sm font-medium leading-none">AgroTrack</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      Public Access
                     </p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/settings" className="cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
@@ -287,13 +226,9 @@ export default function AppSidebar() {
                     <span>Help & Support</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
           </div>
         </div>
       </header>

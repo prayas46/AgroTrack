@@ -18,14 +18,23 @@ import { irrigationZones, weeklyMoistureData } from "./data";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { MoistureChart } from "./moisture-chart";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const TOTAL_WATER_VOLUME = 5000; // Liters
+type ScheduleMode = 'auto' | 'daily' | 'every-other-day' | 'weekly' | 'manual';
+
 
 export default function IrrigationPage() {
   const [zones, setZones] = useState<Zone[]>(irrigationZones);
   const [isSystemRunning, setIsSystemRunning] = useState(false);
   const [waterUsed, setWaterUsed] = useState(TOTAL_WATER_VOLUME * 0.45); // Start at 45% used
   const { toast } = useToast();
+
+  const [moistureThreshold, setMoistureThreshold] = useState(65);
+  const [irrigationDuration, setIrrigationDuration] = useState(30);
+  const [scheduleMode, setScheduleMode] = useState<ScheduleMode>('auto');
 
   // The simulation effect is kept to make the zone cards feel interactive.
   useEffect(() => {
@@ -142,13 +151,57 @@ export default function IrrigationPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Master Controls</CardTitle>
+          <CardTitle>Irrigation Control Panel</CardTitle>
           <CardDescription>
             Manage the entire irrigation system from one place.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex flex-wrap gap-4">
+           <div className="space-y-6">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="moisture-threshold">Moisture Threshold</Label>
+                  <span className="font-semibold text-primary">{moistureThreshold}%</span>
+                </div>
+                <Slider
+                  id="moisture-threshold"
+                  value={[moistureThreshold]}
+                  onValueChange={(value) => setMoistureThreshold(value[0])}
+                  max={100}
+                  step={1}
+                />
+              </div>
+              <div className="space-y-2">
+                 <div className="flex justify-between items-center">
+                  <Label htmlFor="irrigation-duration">Irrigation Duration</Label>
+                  <span className="font-semibold text-primary">{irrigationDuration} min</span>
+                </div>
+                <Slider
+                  id="irrigation-duration"
+                  value={[irrigationDuration]}
+                  onValueChange={(value) => setIrrigationDuration(value[0])}
+                  max={120}
+                  step={5}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="schedule-mode">Schedule Mode</Label>
+                <Select value={scheduleMode} onValueChange={(value: ScheduleMode) => setScheduleMode(value)}>
+                  <SelectTrigger id="schedule-mode">
+                    <SelectValue placeholder="Select mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="auto">Auto (Sensor-based)</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="every-other-day">Every Other Day</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="manual">Manual</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+           </div>
+
+          <div className="flex flex-wrap gap-4 pt-4">
             <Button
               onClick={handleToggleSystem}
               className="w-full sm:w-auto"

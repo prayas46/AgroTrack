@@ -39,8 +39,7 @@ const ClimateRiskForecastOutputSchema = z.object({
   cropDiseaseOutbreak: z.string().describe('The risk of crop disease outbreak.'),
   waterShortageRisk: z.string().describe('The risk of water shortage.'),
   extremeWeatherRisk: z.string().describe('The risk of extreme weather events.'),
-  riskMapAnalysis: z.string().describe('A detailed analysis of the generated risk map for the specified region.'),
-  riskMapDataUri: z.string().optional().describe("A data URI of a satellite map showing various regions with color-coded risk overlays. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."),
+  sustainabilityAnalysis: z.string().describe('A detailed analysis of which crops are suitable for the climate and required soil types or management techniques.'),
   weatherAlerts: z.array(WeatherAlertSchema).optional().describe('A list of active weather alerts for the region.'),
 });
 export type ClimateRiskForecastOutput = z.infer<typeof ClimateRiskForecastOutputSchema>;
@@ -57,13 +56,15 @@ const textGenerationPrompt = ai.definePrompt({
     cropDiseaseOutbreak: true,
     waterShortageRisk: true,
     extremeWeatherRisk: true,
-    riskMapAnalysis: true,
+    sustainabilityAnalysis: true,
     weatherAlerts: true,
   })},
-  prompt: `You are an AI assistant that forecasts climate risks for farmers.
+  prompt: `You are an AI assistant that forecasts climate risks and provides sustainability advice for farmers.
 
-  Based on the region and number of days provided, generate a climate risk forecast, detailing the probability of pest attacks, risk of crop disease outbreak, risk of water shortage, and risk of extreme weather events. Provide a detailed analysis for a risk-map.
+  Based on the region and number of days provided, generate a climate risk forecast, detailing the probability of pest attacks, risk of crop disease outbreak, risk of water shortage, and risk of extreme weather events. 
   
+  Then, provide a "Sustainability Analysis" that details which crops are suitable for the forecasted climate. Also describe the ideal soil types for those crops and any soil management techniques required to make them grow successfully in this region.
+
   Also, check for and include any active weather alerts for the specified region.
 
   Region: {{{region}}}
@@ -78,18 +79,12 @@ const climateRiskForecastFlow = ai.defineFlow(
     outputSchema: ClimateRiskForecastOutputSchema,
   },
   async input => {
-    // Step 1: Generate the textual analysis and weather alerts first.
-    const textResult = await textGenerationPrompt(input);
-    const textOutput = textResult.output;
+    const {output} = await textGenerationPrompt(input);
 
-    if (!textOutput) {
-        throw new Error('Failed to generate the climate risk text forecast. Please try again.');
+    if (!output) {
+        throw new Error('Failed to generate the climate risk forecast. Please try again.');
     }
     
-    // We are no longer generating an image. The UI will use a placeholder.
-    return {
-        ...textOutput,
-        riskMapDataUri: undefined,
-    };
+    return output;
   }
 );

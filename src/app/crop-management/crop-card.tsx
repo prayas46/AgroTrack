@@ -47,7 +47,7 @@ export function CropCard({ crop, onViewDetails, onUpdate }: CropCardProps) {
                 <span >Crop Health</span>
                 <span className="font-semibold">{crop.health}%</span>
             </div>
-            <Progress value={crop.health} className={`h-2 [&>div]:bg-green-500`} />
+            <Progress value={crop.health} className="h-2" />
         </div>
         <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
              <div className="flex items-center gap-2">

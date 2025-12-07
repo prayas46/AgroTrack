@@ -4,25 +4,25 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
+    --background: 36 60% 98%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 123 48% 34%;
+    --primary: 84 39% 40%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 36 100% 50%;
+    --secondary: 44 86% 63%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 60 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 83 49% 55%;
+    --accent: 44 86% 63%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 60 5.9% 90%;
     --input: 60 5.9% 90%;
-    --ring: 123 48% 34%;
+    --ring: 84 39% 40%;
     --radius: 0.5rem;
   }
   .dark {
@@ -32,19 +32,19 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 5% 12%;
     --popover-foreground: 0 0% 98%;
-    --primary: 123 48% 34%;
+    --primary: 84 39% 40%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 36 100% 50%;
+    --secondary: 44 86% 63%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 20%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 83 49% 55%;
+    --accent: 44 86% 63%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 20%;
     --input: 240 3.7% 20%;
-    --ring: 123 48% 34%;
+    --ring: 84 39% 40%;
   }
 }
 
@@ -54,5 +54,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
 }
+

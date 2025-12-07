@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "Farmer": {
@@ -15,63 +14,28 @@
           "type": "string",
           "description": "Name of the farmer."
         },
+        "location": {
+          "type": "string",
+          "description": "Geographic location of the farm."
+        },
         "contactEmail": {
           "type": "string",
           "description": "Email address of the farmer.",
           "format": "email"
-        },
-        "location": {
-          "type": "string",
-          "description": "Geographic location of the farmer's land."
         }
       },
       "required": [
         "id",
         "name",
-        "contactEmail",
-        "location"
-      ]
-    },
-    "Land": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Land",
-      "type": "object",
-      "description": "Represents a piece of land owned or managed by a farmer.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Land entity."
-        },
-        "farmerId": {
-          "type": "string",
-          "description": "Reference to Farmer. (Relationship: Farmer 1:N Land)"
-        },
-        "area": {
-          "type": "number",
-          "description": "Area of the land in acres/hectares."
-        },
-        "soilType": {
-          "type": "string",
-          "description": "Type of soil present in the land."
-        },
-        "location": {
-          "type": "string",
-          "description": "Geographic coordinates of the land."
-        }
-      },
-      "required": [
-        "id",
-        "farmerId",
-        "area",
-        "soilType",
-        "location"
+        "location",
+        "contactEmail"
       ]
     },
     "Crop": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Crop",
       "type": "object",
-      "description": "Represents a specific crop that can be grown.",
+      "description": "Represents a crop that a farmer can grow.",
       "properties": {
         "id": {
           "type": "string",
@@ -81,321 +45,275 @@
           "type": "string",
           "description": "Name of the crop."
         },
-        "growingCycle": {
-          "type": "number",
-          "description": "Growing cycle time of the crop in days."
+        "optimalGrowingConditions": {
+          "type": "string",
+          "description": "Description of the optimal growing conditions for this crop."
         }
       },
       "required": [
         "id",
         "name",
-        "growingCycle"
+        "optimalGrowingConditions"
       ]
     },
-    "ProfitPrediction": {
+    "Farm": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ProfitPrediction",
+      "title": "Farm",
       "type": "object",
-      "description": "Represents the profit prediction for a specific crop on a specific land.",
+      "description": "Represents a farm owned by a farmer.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the ProfitPrediction entity."
-        },
-        "landId": {
-          "type": "string",
-          "description": "Reference to Land. (Relationship: Land 1:N ProfitPrediction)"
-        },
-        "cropId": {
-          "type": "string",
-          "description": "Reference to Crop. (Relationship: Crop 1:N ProfitPrediction)"
-        },
-        "expectedRoi": {
-          "type": "number",
-          "description": "Expected return on investment."
-        },
-        "costBreakdown": {
-          "type": "string",
-          "description": "JSON string containing a cost breakdown of the profit prediction"
-        },
-        "historicalMarketPriceTrend": {
-          "type": "string",
-          "description": "JSON string containing the market price trend."
-        }
-      },
-      "required": [
-        "id",
-        "landId",
-        "cropId",
-        "expectedRoi",
-        "costBreakdown",
-        "historicalMarketPriceTrend"
-      ]
-    },
-    "ClimateRiskForecast": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ClimateRiskForecast",
-      "type": "object",
-      "description": "Represents a climate risk forecast for a specific land area.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the ClimateRiskForecast entity."
-        },
-        "landId": {
-          "type": "string",
-          "description": "Reference to Land. (Relationship: Land 1:N ClimateRiskForecast)"
-        },
-        "pestAttackProbability": {
-          "type": "number",
-          "description": "Probability of pest attack."
-        },
-        "cropDiseaseOutbreak": {
-          "type": "number",
-          "description": "Probability of crop disease outbreak."
-        },
-        "waterShortageRisk": {
-          "type": "number",
-          "description": "Risk of water shortage."
-        },
-        "extremeWeatherRisk": {
-          "type": "number",
-          "description": "Risk of extreme weather events."
-        },
-        "forecastDate": {
-          "type": "string",
-          "description": "Date for which the forecast is generated.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "landId",
-        "pestAttackProbability",
-        "cropDiseaseOutbreak",
-        "waterShortageRisk",
-        "extremeWeatherRisk",
-        "forecastDate"
-      ]
-    },
-    "HarvestBatch": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "HarvestBatch",
-      "type": "object",
-      "description": "Represents a harvest batch with blockchain traceability.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the HarvestBatch entity (Blockchain ID)."
-        },
-        "landId": {
-          "type": "string",
-          "description": "Reference to Land where the harvest was collected. (Relationship: Land 1:N HarvestBatch)"
-        },
-        "cropId": {
-          "type": "string",
-          "description": "Reference to Crop harvested in this batch. (Relationship: Crop 1:N HarvestBatch)"
-        },
-        "fertilizerUsage": {
-          "type": "string",
-          "description": "Details of fertilizer usage."
-        },
-        "pesticideUsage": {
-          "type": "string",
-          "description": "Details of pesticide usage."
-        },
-        "waterUsage": {
-          "type": "number",
-          "description": "Amount of water used for the harvest."
-        },
-        "carbonFootprint": {
-          "type": "number",
-          "description": "Carbon footprint of the harvest."
-        },
-        "harvestDate": {
-          "type": "string",
-          "description": "Date when the harvest was collected.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "landId",
-        "cropId",
-        "fertilizerUsage",
-        "pesticideUsage",
-        "waterUsage",
-        "carbonFootprint",
-        "harvestDate"
-      ]
-    },
-    "MarketplaceOffer": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "MarketplaceOffer",
-      "type": "object",
-      "description": "Represents an offer in the Agro-Match Marketplace.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the MarketplaceOffer entity."
+          "description": "Unique identifier for the Farm entity."
         },
         "farmerId": {
           "type": "string",
-          "description": "Reference to Farmer making the offer. (Relationship: Farmer 1:N MarketplaceOffer)"
+          "description": "Reference to Farmer. (Relationship: Farmer 1:N Farm)"
         },
         "cropId": {
           "type": "string",
-          "description": "Reference to Crop being offered. (Relationship: Crop 1:N MarketplaceOffer)"
+          "description": "Reference to Crop. (Relationship: Crop 1:N Farm)"
         },
-        "quantity": {
+        "sizeInAcres": {
           "type": "number",
-          "description": "Quantity of the crop being offered."
+          "description": "Size of the farm in acres."
         },
-        "price": {
-          "type": "number",
-          "description": "Price of the crop being offered."
-        },
-        "buyerId": {
+        "soilType": {
           "type": "string",
-          "description": "Reference to Buyer interested in the offer. (Relationship: Buyer 1:N MarketplaceOffer)"
-        },
-        "supplierId": {
-          "type": "string",
-          "description": "Reference to Supplier related to the offer."
-        },
-        "storageUnitId": {
-          "type": "string",
-          "description": "Reference to StorageUnit related to the offer."
-        },
-        "transportProviderId": {
-          "type": "string",
-          "description": "Reference to TransportProvider related to the offer."
+          "description": "Type of soil on the farm."
         }
       },
       "required": [
         "id",
         "farmerId",
         "cropId",
-        "quantity",
-        "price"
+        "sizeInAcres",
+        "soilType"
       ]
     },
-    "Buyer": {
+    "ClimateRiskForecast": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Buyer",
+      "title": "ClimateRiskForecast",
       "type": "object",
-      "description": "Represents a buyer in the Agro-Match Marketplace.",
+      "description": "Represents a climate risk forecast for a specific farm.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the Buyer entity."
+          "description": "Unique identifier for the ClimateRiskForecast entity."
         },
-        "name": {
+        "farmId": {
           "type": "string",
-          "description": "Name of the buyer."
+          "description": "Reference to Farm. (Relationship: Farm 1:N ClimateRiskForecast)"
         },
-        "contactEmail": {
+        "forecastDate": {
           "type": "string",
-          "description": "Email address of the buyer.",
-          "format": "email"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "contactEmail"
-      ]
-    },
-    "Supplier": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Supplier",
-      "type": "object",
-      "description": "Represents a supplier in the Agro-Match Marketplace.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Supplier entity."
+          "description": "Date for which the forecast is made.",
+          "format": "date-time"
         },
-        "name": {
-          "type": "string",
-          "description": "Name of the supplier."
-        },
-        "contactEmail": {
-          "type": "string",
-          "description": "Email address of the supplier.",
-          "format": "email"
-        },
-        "supplyType": {
-          "type": "string",
-          "description": "Type of supplies offered by the supplier."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "contactEmail",
-        "supplyType"
-      ]
-    },
-    "StorageUnit": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "StorageUnit",
-      "type": "object",
-      "description": "Represents a storage unit in the Agro-Match Marketplace.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the StorageUnit entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the storage unit."
-        },
-        "location": {
-          "type": "string",
-          "description": "Location of the storage unit."
-        },
-        "capacity": {
+        "pestAttackProbability": {
           "type": "number",
-          "description": "Storage capacity of the unit."
+          "description": "Probability of pest attack (0-1)."
+        },
+        "cropDiseaseOutbreakRisk": {
+          "type": "number",
+          "description": "Risk of crop disease outbreak (0-1)."
+        },
+        "waterShortageRisk": {
+          "type": "number",
+          "description": "Risk of water shortage (0-1)."
+        },
+        "extremeWeatherRisk": {
+          "type": "number",
+          "description": "Risk of extreme weather events (0-1)."
         }
       },
       "required": [
         "id",
-        "name",
-        "location",
-        "capacity"
+        "farmId",
+        "forecastDate",
+        "pestAttackProbability",
+        "cropDiseaseOutbreakRisk",
+        "waterShortageRisk",
+        "extremeWeatherRisk"
       ]
     },
-    "TransportProvider": {
+    "ProfitPrediction": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "TransportProvider",
+      "title": "ProfitPrediction",
       "type": "object",
-      "description": "Represents a transport provider in the Agro-Match Marketplace.",
+      "description": "Represents a profit prediction for a specific farm and crop combination.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the TransportProvider entity."
+          "description": "Unique identifier for the ProfitPrediction entity."
         },
-        "name": {
+        "farmId": {
           "type": "string",
-          "description": "Name of the transport provider."
+          "description": "Reference to Farm. (Relationship: Farm 1:N ProfitPrediction)"
         },
-        "contactEmail": {
+        "predictionDate": {
           "type": "string",
-          "description": "Email address of the transport provider.",
-          "format": "email"
+          "description": "Date when the profit prediction was made.",
+          "format": "date-time"
         },
-        "transportType": {
+        "expectedROI": {
+          "type": "number",
+          "description": "Expected return on investment."
+        },
+        "costBreakdown": {
           "type": "string",
-          "description": "Type of transport provided."
+          "description": "Detailed breakdown of costs associated with the crop."
+        },
+        "historicalMarketPriceTrend": {
+          "type": "string",
+          "description": "Historical market price trends for the crop."
         }
       },
       "required": [
         "id",
-        "name",
-        "contactEmail",
-        "transportType"
+        "farmId",
+        "predictionDate",
+        "expectedROI",
+        "costBreakdown",
+        "historicalMarketPriceTrend"
+      ]
+    },
+    "HarvestBatch": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "HarvestBatch",
+      "type": "object",
+      "description": "Represents a harvest batch with its associated data for blockchain integration.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the HarvestBatch entity."
+        },
+        "farmId": {
+          "type": "string",
+          "description": "Reference to Farm. (Relationship: Farm 1:N HarvestBatch)"
+        },
+        "harvestDate": {
+          "type": "string",
+          "description": "Date of the harvest.",
+          "format": "date-time"
+        },
+        "fertilizerUsage": {
+          "type": "string",
+          "description": "Details of fertilizer usage for the batch."
+        },
+        "pesticideUsage": {
+          "type": "string",
+          "description": "Details of pesticide usage for the batch."
+        },
+        "waterUsage": {
+          "type": "number",
+          "description": "Amount of water used for the batch."
+        },
+        "carbonFootprint": {
+          "type": "number",
+          "description": "Carbon footprint of the batch."
+        },
+        "cropVariety": {
+          "type": "string",
+          "description": "Variety of the crop harvested."
+        }
+      },
+      "required": [
+        "id",
+        "farmId",
+        "harvestDate",
+        "fertilizerUsage",
+        "pesticideUsage",
+        "waterUsage",
+        "carbonFootprint",
+        "cropVariety"
+      ]
+    },
+    "MarketplaceDeal": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "MarketplaceDeal",
+      "type": "object",
+      "description": "Represents a deal made in the Agro-Match Marketplace.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the MarketplaceDeal entity."
+        },
+        "farmId": {
+          "type": "string",
+          "description": "Reference to Farm. (Relationship: Farm 1:N MarketplaceDeal)"
+        },
+        "buyerId": {
+          "type": "string",
+          "description": "Identifier of the buyer involved in the deal."
+        },
+        "supplierId": {
+          "type": "string",
+          "description": "Identifier of the supplier involved in the deal."
+        },
+        "dealDate": {
+          "type": "string",
+          "description": "Date when the deal was made.",
+          "format": "date-time"
+        },
+        "price": {
+          "type": "number",
+          "description": "Price of the deal."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity of the product in the deal."
+        }
+      },
+      "required": [
+        "id",
+        "farmId",
+        "buyerId",
+        "supplierId",
+        "dealDate",
+        "price",
+        "quantity"
+      ]
+    },
+    "RealTimeDataReport": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "RealTimeDataReport",
+      "type": "object",
+      "description": "Represents real-time data collected from the website and integrated into reports.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the RealTimeDataReport entity."
+        },
+        "farmId": {
+          "type": "string",
+          "description": "Reference to Farm. (Relationship: Farm 1:N RealTimeDataReport)"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of when the data was collected.",
+          "format": "date-time"
+        },
+        "soilMoisture": {
+          "type": "number",
+          "description": "Soil moisture level."
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Temperature reading."
+        },
+        "weatherConditions": {
+          "type": "string",
+          "description": "Current weather conditions."
+        }
+      },
+      "required": [
+        "id",
+        "farmId",
+        "timestamp",
+        "soilMoisture",
+        "temperature",
+        "weatherConditions"
       ]
     }
   },
@@ -408,37 +326,37 @@
   "firestore": {
     "structure": [
       {
-        "path": "/users/{farmerId}",
+        "path": "/farmers/{farmerId}",
         "definition": {
           "entityName": "Farmer",
           "schema": {
             "$ref": "#/backend/entities/Farmer"
           },
-          "description": "Stores farmer profiles.  The 'farmerId' is used as the document ID. Provides a central location for user information and authentication.",
+          "description": "Collection of farmers using the AgroCast platform. Root level collection.",
           "params": [
             {
               "name": "farmerId",
-              "description": "The unique identifier for the farmer."
+              "description": "Unique identifier for the farmer."
             }
           ]
         }
       },
       {
-        "path": "/users/{farmerId}/lands/{landId}",
+        "path": "/farmers/{farmerId}/farms/{farmId}",
         "definition": {
-          "entityName": "Land",
+          "entityName": "Farm",
           "schema": {
-            "$ref": "#/backend/entities/Land"
+            "$ref": "#/backend/entities/Farm"
           },
-          "description": "Stores land details associated with a specific farmer. Includes denormalized 'farmerId' for authorization independence.",
+          "description": "Collection of farms owned by a specific farmer. (Relationship: Farmer 1:N Farm).",
           "params": [
             {
               "name": "farmerId",
-              "description": "The unique identifier for the farmer."
+              "description": "Unique identifier for the farmer."
             },
             {
-              "name": "landId",
-              "description": "The unique identifier for the land."
+              "name": "farmId",
+              "description": "Unique identifier for the farm."
             }
           ]
         }
@@ -450,168 +368,136 @@
           "schema": {
             "$ref": "#/backend/entities/Crop"
           },
-          "description": "Stores crop information. Accessible to all users, potentially read-only for non-admin users.",
+          "description": "Collection of crops available. No ownership, globally available.",
           "params": [
             {
               "name": "cropId",
-              "description": "The unique identifier for the crop."
+              "description": "Unique identifier for the crop."
             }
           ]
         }
       },
       {
-        "path": "/users/{farmerId}/lands/{landId}/profit_predictions/{profitPredictionId}",
-        "definition": {
-          "entityName": "ProfitPrediction",
-          "schema": {
-            "$ref": "#/backend/entities/ProfitPrediction"
-          },
-          "description": "Stores profit predictions for a specific land associated with a farmer. Includes denormalized 'farmerId' and 'landId' for authorization independence.",
-          "params": [
-            {
-              "name": "farmerId",
-              "description": "The unique identifier for the farmer."
-            },
-            {
-              "name": "landId",
-              "description": "The unique identifier for the land."
-            },
-            {
-              "name": "profitPredictionId",
-              "description": "The unique identifier for the profit prediction."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{farmerId}/lands/{landId}/climate_risk_forecasts/{climateRiskForecastId}",
+        "path": "/farmers/{farmerId}/farms/{farmId}/climateRiskForecasts/{climateRiskForecastId}",
         "definition": {
           "entityName": "ClimateRiskForecast",
           "schema": {
             "$ref": "#/backend/entities/ClimateRiskForecast"
           },
-          "description": "Stores climate risk forecasts for a specific land owned by a farmer. Includes denormalized 'farmerId' and 'landId' for authorization independence.",
+          "description": "Collection of climate risk forecasts for a specific farm. (Relationship: Farm 1:N ClimateRiskForecast).",
           "params": [
             {
               "name": "farmerId",
-              "description": "The unique identifier for the farmer."
+              "description": "Unique identifier for the farmer."
             },
             {
-              "name": "landId",
-              "description": "The unique identifier for the land."
+              "name": "farmId",
+              "description": "Unique identifier for the farm."
             },
             {
               "name": "climateRiskForecastId",
-              "description": "The unique identifier for the climate risk forecast."
+              "description": "Unique identifier for the climate risk forecast."
             }
           ]
         }
       },
       {
-        "path": "/users/{farmerId}/lands/{landId}/harvest_batches/{harvestBatchId}",
+        "path": "/farmers/{farmerId}/farms/{farmId}/profitPredictions/{profitPredictionId}",
+        "definition": {
+          "entityName": "ProfitPrediction",
+          "schema": {
+            "$ref": "#/backend/entities/ProfitPrediction"
+          },
+          "description": "Collection of profit predictions for a specific farm. (Relationship: Farm 1:N ProfitPrediction).",
+          "params": [
+            {
+              "name": "farmerId",
+              "description": "Unique identifier for the farmer."
+            },
+            {
+              "name": "farmId",
+              "description": "Unique identifier for the farm."
+            },
+            {
+              "name": "profitPredictionId",
+              "description": "Unique identifier for the profit prediction."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/farmers/{farmerId}/farms/{farmId}/harvestBatches/{harvestBatchId}",
         "definition": {
           "entityName": "HarvestBatch",
           "schema": {
             "$ref": "#/backend/entities/HarvestBatch"
           },
-          "description": "Stores harvest batch information for a specific land owned by a farmer. Includes denormalized 'farmerId' and 'landId' for authorization independence.",
+          "description": "Collection of harvest batches for a specific farm. (Relationship: Farm 1:N HarvestBatch).",
           "params": [
             {
               "name": "farmerId",
-              "description": "The unique identifier for the farmer."
+              "description": "Unique identifier for the farmer."
             },
             {
-              "name": "landId",
-              "description": "The unique identifier for the land."
+              "name": "farmId",
+              "description": "Unique identifier for the farm."
             },
             {
               "name": "harvestBatchId",
-              "description": "The unique identifier for the harvest batch."
+              "description": "Unique identifier for the harvest batch."
             }
           ]
         }
       },
       {
-        "path": "/marketplace_offers/{marketplaceOfferId}",
+        "path": "/farmers/{farmerId}/farms/{farmId}/marketplaceDeals/{marketplaceDealId}",
         "definition": {
-          "entityName": "MarketplaceOffer",
+          "entityName": "MarketplaceDeal",
           "schema": {
-            "$ref": "#/backend/entities/MarketplaceOffer"
+            "$ref": "#/backend/entities/MarketplaceDeal"
           },
-          "description": "Stores marketplace offers. Includes denormalized 'farmerId' for authorization independence.",
+          "description": "Collection of marketplace deals associated with a specific farm. (Relationship: Farm 1:N MarketplaceDeal).  Includes denormalized 'members' map for authorization independence if needed for collaborative deals.",
           "params": [
             {
-              "name": "marketplaceOfferId",
-              "description": "The unique identifier for the marketplace offer."
+              "name": "farmerId",
+              "description": "Unique identifier for the farmer."
+            },
+            {
+              "name": "farmId",
+              "description": "Unique identifier for the farm."
+            },
+            {
+              "name": "marketplaceDealId",
+              "description": "Unique identifier for the marketplace deal."
             }
           ]
         }
       },
       {
-        "path": "/buyers/{buyerId}",
+        "path": "/farmers/{farmerId}/farms/{farmId}/realTimeDataReports/{realTimeDataReportId}",
         "definition": {
-          "entityName": "Buyer",
+          "entityName": "RealTimeDataReport",
           "schema": {
-            "$ref": "#/backend/entities/Buyer"
+            "$ref": "#/backend/entities/RealTimeDataReport"
           },
-          "description": "Stores buyer profiles in the marketplace.",
+          "description": "Collection of real-time data reports for a specific farm. (Relationship: Farm 1:N RealTimeDataReport).",
           "params": [
             {
-              "name": "buyerId",
-              "description": "The unique identifier for the buyer."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/suppliers/{supplierId}",
-        "definition": {
-          "entityName": "Supplier",
-          "schema": {
-            "$ref": "#/backend/entities/Supplier"
-          },
-          "description": "Stores supplier profiles in the marketplace.",
-          "params": [
+              "name": "farmerId",
+              "description": "Unique identifier for the farmer."
+            },
             {
-              "name": "supplierId",
-              "description": "The unique identifier for the supplier."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/storage_units/{storageUnitId}",
-        "definition": {
-          "entityName": "StorageUnit",
-          "schema": {
-            "$ref": "#/backend/entities/StorageUnit"
-          },
-          "description": "Stores storage unit information in the marketplace.",
-          "params": [
+              "name": "farmId",
+              "description": "Unique identifier for the farm."
+            },
             {
-              "name": "storageUnitId",
-              "description": "The unique identifier for the storage unit."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/transport_providers/{transportProviderId}",
-        "definition": {
-          "entityName": "TransportProvider",
-          "schema": {
-            "$ref": "#/backend/entities/TransportProvider"
-          },
-          "description": "Stores transport provider information in the marketplace.",
-          "params": [
-            {
-              "name": "transportProviderId",
-              "description": "The unique identifier for the transport provider."
+              "name": "realTimeDataReportId",
+              "description": "Unique identifier for the real-time data report."
             }
           ]
         }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support AgroCast's core features: AI-Based Climate Risk Forecast, Profit Prediction Engine, Agro-Match Marketplace, and Blockchain-Backed Farm Digital Passport. The structure prioritizes authorization independence, clarity, and scalability.\n\n**Farmers and Related Data:** Farmers and their associated data (Land, ProfitPrediction, ClimateRiskForecast, HarvestBatch, and MarketplaceOffer) are stored under the `/users/{farmerId}` path to ensure that only the authenticated farmer can access and modify their data. The farmer's `id` is used as the document ID for their profile in the `/users` collection. The `farmerId` is denormalized into the Land, MarketplaceOffer collections to ensure Authorization Independence.\n\n**Crops:** Crops data is stored in a top-level `/crops` collection. This is because crops are global and not owned by specific users, ensuring that any user can access crop information. This collection will be read-only for most users, with admin access to modify.\n\n**Marketplace Data:** The MarketplaceOffer entities are stored in the `/marketplace_offers` collection. This segregation, instead of nesting under farmer, is to facilitate listing and querying of offers across all farmers, supporting the Agro-Match Marketplace feature. The `farmerId` is included in each `MarketplaceOffer` document to link it back to the farmer who created it, and to implement security rules based on ownership.\n\n**Buyers, Suppliers, StorageUnits and TransportProviders:** Stored in top-level collections as they are considered global entities that can be accessed by all farmers. This allows for easy querying and matching in the Agro-Match Marketplace.\n\n**Authorization Independence:** Authorization independence is achieved by denormalizing the `farmerId` into the `lands`, `marketplace_offers`, `profit_predictions`, `climate_risk_forecasts`, and `harvest_batches` collections. This eliminates the need for `get()` calls in the security rules to verify ownership, allowing atomic operations and improving performance.\n\n**QAPs Support:**\n\n*   **Secure List Operations:** The segregation of data into user-owned subcollections and global collections (crops, marketplace) ensures that list operations can be securely performed based on the user's role and ownership.  Rules can simply check the requesting user's ID against the `farmerId` in the documents to prevent unauthorized listing.\n\n*   **Membership Model:**  The `marketplace_offers` collection uses the `farmerId` field to implement a membership model for ownership. Security rules can easily verify if the requesting user is the owner (farmer) of the marketplace offer."
+    "reasoning": "The Firestore structure is designed to support AgroCast's core features—AI-based climate risk forecasts, profit prediction engine, blockchain-backed farm digital passport, and an agro-match marketplace. The structure prioritizes authorization independence and simplifies security rules. Path-based ownership is preferred where applicable.\n\nFarmers are at the root of the data structure, owning farms, climate risk forecasts, profit predictions, harvest batches, marketplace deals, and real-time data reports. This ensures that data access can be easily controlled based on the farmer's ID. By nesting data under the `/farmers/{farmerId}` path, we enforce clear ownership and avoid the need for complex `get()` calls in the security rules.\n\nAuthorization Independence (CRITICAL):  Denormalization is used where collaborative access is required or when data needs to be accessed outside the farmer's scope. For example, if certain marketplace deals need to be visible to multiple parties, the deal document will include a `members` map to specify the roles and permissions of different users.\n\nQAPs (Rules are not Filters): Structural Segregation is employed to ensure secure `list` operations. Private data is stored under the farmer's path (e.g., `/farmers/{farmerId}/farms/{farmId}`), while potentially public data, such as aggregated marketplace statistics, can be stored in separate collections with different security rules.\n\nReal-time data reports are also nested under farms. Given the user's feedback to handle the real-time data reports, the structure is prepared to handle frequent updates without compromising security. RealTimeDataReport documents are nested under the farm which allows to query for recent reports easily."
   }
 }

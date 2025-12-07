@@ -1,26 +1,34 @@
-
 /**
- * @file firestore.rules
- * @description Security rules for the AgroCast Firestore database.
+ * Core Philosophy: This ruleset enforces a strict user-ownership model centered
+ * around the "Farmer" entity. All data related to a farmer, such as their farms,
+ * forecasts, and reports, is nested under a path dedicated to that user. This
+ * approach ensures data privacy and simplifies security logic by leveraging path-based
+ * authorization.
  *
- * @section Core Philosophy
- * This ruleset enforces a strict user-ownership model, ensuring that farmers have exclusive control over their personal and operational data. The security model is designed around the principle that a user (a "Farmer") can only access documents within their own data tree, which is segregated under the path `/users/{farmerId}`. Public data is world-readable, but write access is restricted.
+ * Data Structure: The primary data hierarchy is `/farmers/{farmerId}/...`. This
+ * structure ensures that all user-specific data is isolated within their own
+ * data tree. A separate top-level collection, `/crops`, holds publicly readable,
+ * global data that is not tied to any specific user.
  *
- * @section Data Structure
- * The data is organized into two main categories:
- * 1. User-Private Data: All data specific to a farmer, such as their profile, land details, profit predictions, risk forecasts, and harvest batches, is nested under `/users/{farmerId}`. Access to these paths is strictly controlled by matching the authenticated user's ID with the `{farmerId}` wildcard.
- * 2. Public & Shared Data: Collections that contain data relevant to all users, such as crop information (`/crops`) and marketplace listings (`/marketplace_offers`, `/buyers`, etc.), are placed at the root level. These collections are generally world-readable to facilitate app-wide features, but write access is tightly controlled.
+ * Key Security Decisions:
+ * - Default Deny: All operations are denied unless explicitly allowed.
+ * - User Isolation: A user can only access data within their own
+ *   `/farmers/{userId}` path.
+ * - No User Enumeration: Listing documents in the top-level `/farmers` collection
+ *   is strictly forbidden to protect user privacy.
+ * - Read-Only Global Data: The `/crops` collection is readable by any authenticated
+ *   user but is not writable from the client-side, ensuring data integrity. It must
+ *   be managed by a trusted backend process.
  *
- * @section Key Security Decisions
- * - User Isolation: A user cannot read, list, or write data belonging to another user. This is the cornerstone of the security model.
- * - Public Read-Only Collections: Global data like `/crops`, `/buyers`, and `/suppliers` are publicly readable to all users (including unauthenticated ones) but are not writable by clients. This is a secure default for data that should be managed by a trusted backend or admin process.
- * - Owner-Controlled Public Content: For `/marketplace_offers`, documents are publicly readable, but only the farmer who created an offer can modify or delete it. Ownership is determined by a `farmerId` field denormalized onto each offer document.
+ * Denormalization for Authorization: To maintain simple and performant rules,
+ * ownership is determined by the `farmerId` in the document path. Sub-collections like
+ * `/farms` contain a `farmerId` field within their data to enforce relational
+ * integrity on creation and prevent re-parenting on update. This avoids costly `get()`
+ * calls to parent documents.
  *
- * @section Denormalization for Authorization
- * To create simpler and more performant rules, this ruleset relies on denormalized data. Specifically, any document that needs ownership-based security outside of the `/users/{farmerId}` path (like a `MarketplaceOffer`) must contain a `farmerId` field. This avoids slow and costly `get()` calls to other documents during rule evaluation.
- *
- * @section Structural Segregation
- * The separation between private user subcollections (e.g., `/users/{farmerId}/lands`) and public top-level collections (e.g., `/marketplace_offers`) is intentional. This structure makes list operations both secure and efficient, preventing accidental exposure of private data in public queries.
+ * Structural Segregation: Private user data (e.g., farms, profit predictions) is
+ * structurally separated from public data (`/crops`). This is a secure and performant
+ * pattern for managing different access levels, especially for list operations.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -38,197 +46,171 @@ service cloud.firestore {
     }
 
     /**
-     * Checks if the authenticated user's UID matches the provided userId.
-     * This is the primary function for verifying document ownership.
+     * Checks if the currently authenticated user's UID matches the provided userId.
      */
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
     /**
-     * Combines an ownership check with a check for the document's existence.
-     * CRITICAL for all update and delete operations to prevent modifying non-existent data.
+     * For update/delete, checks ownership AND that the document already exists.
+     * This prevents modifying or deleting a document that doesn't exist.
      */
     function isExistingOwner(userId) {
       return isOwner(userId) && resource != null;
     }
 
     /**
-     * Validates that the incoming document data contains a field that
-     * correctly links it to a parent document in the path.
-     * Used on CREATE to enforce relational integrity.
+     * On create, validates that a Farmer's own profile document contains an `id`
+     * field that matches their auth UID. This enforces relational integrity.
      */
-    function incomingDataMatchesPath(fieldName, value) {
-      return request.resource.data[fieldName] == value;
+    function isCreatingFarmerProfile(farmerId) {
+      return isOwner(farmerId) && request.resource.data.id == farmerId;
     }
 
     /**
-     * Validates that a specific field in a document is immutable.
-     * Used on UPDATE to prevent changing critical ownership or relational links.
+     * On update, ensures the farmer's unique `id` cannot be changed.
      */
-    function fieldIsImmutable(fieldName) {
-      return request.resource.data[fieldName] == resource.data[fieldName];
-    }
-
-
-    // -------------------------------------------------------------------------
-    // User-Private Collections
-    // -------------------------------------------------------------------------
-
-    /**
-     * @description Manages farmer profile documents.
-     * @path /users/{farmerId}
-     * @allow A user creating their own profile: `auth.uid == 'farmer123'` (create) on `/users/farmer123`.
-     * @deny An authenticated user trying to read another user's profile: `auth.uid == 'farmer456'` (get) on `/users/farmer123`.
-     * @principle Restricts access to a user's own data tree and allows users to create their own root document.
-     */
-    match /users/{farmerId} {
-      allow get, list, update, delete: if isOwner(farmerId);
-      allow create: if isOwner(farmerId) && incomingDataMatchesPath('id', farmerId);
+    function isUpdatingFarmerProfile() {
+      return request.resource.data.id == resource.data.id;
     }
 
     /**
-     * @description Manages land documents owned by a specific farmer.
-     * @path /users/{farmerId}/lands/{landId}
-     * @allow A farmer creating a land document under their own profile: `auth.uid == 'farmer123'` (create) on `/users/farmer123/lands/land_abc`.
-     * @deny A farmer trying to delete another farmer's land: `auth.uid == 'farmer456'` (delete) on `/users/farmer123/lands/land_abc`.
-     * @principle Enforces document ownership via path parameter and validates relational integrity on writes.
+     * On create, validates that a sub-document (like a Farm) has its `farmerId`
+     * field correctly set to the owner's UID from the path.
      */
-    match /users/{farmerId}/lands/{landId} {
-      allow get, list: if isOwner(farmerId);
-      allow create: if isOwner(farmerId) && incomingDataMatchesPath('farmerId', farmerId);
-      allow update: if isExistingOwner(farmerId) && fieldIsImmutable('farmerId');
+    function isCreatingFarmForSelf(farmerId) {
+      return isOwner(farmerId) && request.resource.data.farmerId == farmerId;
+    }
+
+    /**
+     * On update, ensures the `farmerId` foreign key cannot be changed, preventing
+     * a document from being moved between owners.
+     */
+    function farmerIdIsImmutable() {
+      return request.resource.data.farmerId == resource.data.farmerId;
+    }
+
+
+    /**
+     * @description Manages farmer profile documents. Each farmer can create their own profile, but cannot see or list others.
+     * @path /farmers/{farmerId}
+     * @allow A user (UID 'user123') creating their own document at `/farmers/user123`. (create)
+     * @deny An anonymous user trying to read `/farmers/user123`. (get)
+     * @deny A logged-in user ('user456') trying to list all documents at `/farmers`. (list)
+     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     */
+    match /farmers/{farmerId} {
+      allow get: if isOwner(farmerId);
+      allow list: if false;
+      allow create: if isCreatingFarmerProfile(farmerId);
+      allow update: if isExistingOwner(farmerId) && isUpdatingFarmerProfile();
       allow delete: if isExistingOwner(farmerId);
     }
 
     /**
-     * @description Manages profit predictions for a specific piece of land.
-     * @path /users/{farmerId}/lands/{landId}/profit_predictions/{profitPredictionId}
-     * @allow A farmer reading a prediction for their own land: `auth.uid == 'farmer123'` (get) on a document in this path.
-     * @deny Any user trying to list predictions for another farmer's land.
-     * @principle Inherits ownership from the parent path (`farmerId`) and validates the link to the parent land document.
+     * @description Manages the farms owned by a specific farmer. Only the farmer can manage their own farms.
+     * @path /farmers/{farmerId}/farms/{farmId}
+     * @allow The farmer 'user123' creating a new farm document in their own subcollection `/farmers/user123/farms/farm_abc`. (create)
+     * @deny A different farmer 'user456' trying to update a farm at `/farmers/user123/farms/farm_abc`. (update)
+     * @principle Enforces document ownership for all operations within a user-specific subcollection.
      */
-    match /users/{farmerId}/lands/{landId}/profit_predictions/{profitPredictionId} {
-      allow get, list: if isOwner(farmerId);
-      allow create: if isOwner(farmerId) && incomingDataMatchesPath('landId', landId);
-      allow update: if isExistingOwner(farmerId) && fieldIsImmutable('landId');
+    match /farmers/{farmerId}/farms/{farmId} {
+      allow get: if isOwner(farmerId);
+      allow list: if isOwner(farmerId);
+      allow create: if isCreatingFarmForSelf(farmerId);
+      allow update: if isExistingOwner(farmerId) && farmerIdIsImmutable();
       allow delete: if isExistingOwner(farmerId);
     }
 
     /**
-     * @description Manages climate risk forecasts for a specific piece of land.
-     * @path /users/{farmerId}/lands/{landId}/climate_risk_forecasts/{climateRiskForecastId}
-     * @allow A farmer creating a forecast for their own land: `auth.uid == 'farmer123'` (create) on a document in this path.
-     * @deny Any user trying to update a forecast for another farmer's land.
-     * @principle Inherits ownership from the parent path (`farmerId`) and validates the link to the parent land document.
-     */
-    match /users/{farmerId}/lands/{landId}/climate_risk_forecasts/{climateRiskForecastId} {
-      allow get, list: if isOwner(farmerId);
-      allow create: if isOwner(farmerId) && incomingDataMatchesPath('landId', landId);
-      allow update: if isExistingOwner(farmerId) && fieldIsImmutable('landId');
-      allow delete: if isExistingOwner(farmerId);
-    }
-
-    /**
-     * @description Manages harvest batches with blockchain traceability for a specific piece of land.
-     * @path /users/{farmerId}/lands/{landId}/harvest_batches/{harvestBatchId}
-     * @allow A farmer deleting a harvest batch from their own land: `auth.uid == 'farmer123'` (delete) on a document in this path.
-     * @deny Any user trying to read harvest batches from another farmer's land.
-     * @principle Inherits ownership from the parent path (`farmerId`) and validates the link to the parent land document.
-     */
-    match /users/{farmerId}/lands/{landId}/harvest_batches/{harvestBatchId} {
-      allow get, list: if isOwner(farmerId);
-      allow create: if isOwner(farmerId) && incomingDataMatchesPath('landId', landId);
-      allow update: if isExistingOwner(farmerId) && fieldIsImmutable('landId');
-      allow delete: if isExistingOwner(farmerId);
-    }
-
-    // -------------------------------------------------------------------------
-    // Public & Shared Collections
-    // -------------------------------------------------------------------------
-
-    /**
-     * @description Stores global crop information. Data is public and read-only for clients.
+     * @description Manages globally available crop information. This data is public to all authenticated users but cannot be modified by them.
      * @path /crops/{cropId}
-     * @allow Any user, authenticated or not, reading crop data: `auth == null` (get) on `/crops/wheat`.
-     * @deny Any client trying to create, update, or delete a crop document.
-     * @principle Provides public read access to global data while protecting it from client modification.
+     * @allow Any authenticated user reading the document at `/crops/wheat`. (get)
+     * @deny Any user, authenticated or not, trying to create a new crop document. (create)
+     * @principle Provides public, read-only access to a global dataset, with writes restricted to trusted server environments.
      */
     match /crops/{cropId} {
-      allow get, list: if true;
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
       allow create: if false;
       allow update: if false;
       allow delete: if false;
     }
 
     /**
-     * @description Manages marketplace offers, which are publicly viewable but can only be managed by their owner.
-     * @path /marketplace_offers/{marketplaceOfferId}
-     * @allow A farmer creating an offer and setting themselves as owner: `auth.uid == 'farmer123'` (create) with `request.resource.data.farmerId == 'farmer123'`.
-     * @deny A farmer trying to delete another farmer's offer: `auth.uid == 'farmer456'` (delete) on an offer where `resource.data.farmerId == 'farmer123'`.
-     * @principle Enforces document ownership for writes on a public collection, using a denormalized `farmerId` field.
+     * @description Secures climate risk forecasts, which are private to the farm's owner.
+     * @path /farmers/{farmerId}/farms/{farmId}/climateRiskForecasts/{climateRiskForecastId}
+     * @allow The farmer 'user123' reading a forecast at `/farmers/user123/farms/farm_abc/climateRiskForecasts/forecast_1`. (get)
+     * @deny Another farmer 'user456' trying to delete that same forecast. (delete)
+     * @principle Enforces strict ownership based on the top-level `farmerId` in the path for nested subcollections.
      */
-    match /marketplace_offers/{marketplaceOfferId} {
-      allow get, list: if true;
-      allow create: if isSignedIn() && request.resource.data.farmerId == request.auth.uid;
-      allow update: if isExistingOwner(resource.data.farmerId) && fieldIsImmutable('farmerId');
-      allow delete: if isExistingOwner(resource.data.farmerId);
+    match /farmers/{farmerId}/farms/{farmId}/climateRiskForecasts/{climateRiskForecastId} {
+      allow get: if isOwner(farmerId);
+      allow list: if isOwner(farmerId);
+      allow create: if isOwner(farmerId);
+      allow update: if isExistingOwner(farmerId);
+      allow delete: if isExistingOwner(farmerId);
     }
 
     /**
-     * @description Stores public buyer profiles. Data is read-only for clients.
-     * @path /buyers/{buyerId}
-     * @allow Any user reading a buyer's profile: (get) on `/buyers/buyer_abc`.
-     * @deny Any client trying to modify buyer data.
-     * @principle Provides public read access to global data while protecting it from client modification.
+     * @description Secures profit predictions, which are private to the farm's owner.
+     * @path /farmers/{farmerId}/farms/{farmId}/profitPredictions/{profitPredictionId}
+     * @allow The farmer 'user123' listing all predictions for their farm at `/farmers/user123/farms/farm_abc/profitPredictions`. (list)
+     * @deny An anonymous user attempting to create a prediction. (create)
+     * @principle Enforces strict ownership based on the top-level `farmerId` in the path for nested subcollections.
      */
-    match /buyers/{buyerId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /farmers/{farmerId}/farms/{farmId}/profitPredictions/{profitPredictionId} {
+      allow get: if isOwner(farmerId);
+      allow list: if isOwner(farmerId);
+      allow create: if isOwner(farmerId);
+      allow update: if isExistingOwner(farmerId);
+      allow delete: if isExistingOwner(farmerId);
     }
 
     /**
-     * @description Stores public supplier profiles. Data is read-only for clients.
-     * @path /suppliers/{supplierId}
-     * @allow Any user listing all suppliers: (list) on `/suppliers`.
-     * @deny Any client trying to modify supplier data.
-     * @principle Provides public read access to global data while protecting it from client modification.
+     * @description Secures harvest batch data (digital passport), which is private to the farm's owner.
+     * @path /farmers/{farmerId}/farms/{farmId}/harvestBatches/{harvestBatchId}
+     * @allow The farmer 'user123' creating a harvest batch for their farm. (create)
+     * @deny Another farmer 'user456' attempting to read a harvest batch owned by 'user123'. (get)
+     * @principle Enforces strict ownership based on the top-level `farmerId` in the path for nested subcollections.
      */
-    match /suppliers/{supplierId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /farmers/{farmerId}/farms/{farmId}/harvestBatches/{harvestBatchId} {
+      allow get: if isOwner(farmerId);
+      allow list: if isOwner(farmerId);
+      allow create: if isOwner(farmerId);
+      allow update: if isExistingOwner(farmerId);
+      allow delete: if isExistingOwner(farmerId);
     }
 
     /**
-     * @description Stores public storage unit information. Data is read-only for clients.
-     * @path /storage_units/{storageUnitId}
-     * @allow Any user reading storage unit details: (get) on `/storage_units/unit_xyz`.
-     * @deny Any client trying to modify storage unit data.
-     * @principle Provides public read access to global data while protecting it from client modification.
+     * @description Secures marketplace deals, which are private to the farm's owner.
+     * @path /farmers/{farmerId}/farms/{farmId}/marketplaceDeals/{marketplaceDealId}
+     * @allow The farmer 'user123' updating a deal related to their farm. (update)
+     * @deny Another farmer 'user456' attempting to list deals for a farm owned by 'user123'. (list)
+     * @principle Enforces strict ownership based on the top-level `farmerId` in the path for nested subcollections.
      */
-    match /storage_units/{storageUnitId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /farmers/{farmerId}/farms/{farmId}/marketplaceDeals/{marketplaceDealId} {
+      allow get: if isOwner(farmerId);
+      allow list: if isOwner(farmerId);
+      allow create: if isOwner(farmerId);
+      allow update: if isExistingOwner(farmerId);
+      allow delete: if isExistingOwner(farmerId);
     }
 
     /**
-     * @description Stores public transport provider information. Data is read-only for clients.
-     * @path /transport_providers/{transportProviderId}
-     * @allow Any user listing all transport providers: (list) on `/transport_providers`.
-     d     * @eny Any client trying to modify transport provider data.
-     * @principle Provides public read access to global data while protecting it from client modification.
+     * @description Secures real-time data reports, which are private to the farm's owner.
+     * @path /farmers/{farmerId}/farms/{farmId}/realTimeDataReports/{realTimeDataReportId}
+     * @allow The farmer 'user123' reading a real-time report from their farm. (get)
+     * @deny Another farmer 'user456' attempting to create a report in a farm not belonging to them. (create)
+     * @principle Enforces strict ownership based on the top-level `farmerId` in the path for nested subcollections.
      */
-    match /transport_providers/{transportProviderId} {
-      allow get, list: if true;
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+    match /farmers/{farmerId}/farms/{farmId}/realTimeDataReports/{realTimeDataReportId} {
+      allow get: if isOwner(farmerId);
+      allow list: if isOwner(farmerId);
+      allow create: if isOwner(farmerId);
+      allow update: if isExistingOwner(farmerId);
+      allow delete: if isExistingOwner(farmerId);
     }
   }
 }

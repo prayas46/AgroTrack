@@ -56,9 +56,9 @@
     },
     {
       "id": "crop-management-card",
-      "description": "Lush green crops growing in a field.",
-      "imageUrl": "https://images.unsplash.com/photo-1492496913980-501348b61469?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-      "imageHint": "green crops"
+      "description": "A person's hands holding a small sprout in a field.",
+      "imageUrl": "https://images.unsplash.com/photo-1511735643442-503bb3bd348a?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "sprout hands"
     },
     {
       "id": "equipment-card",

@@ -6,6 +6,7 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
@@ -25,7 +26,6 @@ import {
   Settings,
   HelpCircle,
   Menu,
-  Bell,
   Search,
 } from 'lucide-react';
 import { Logo } from './logo';
@@ -40,7 +40,6 @@ import {
 } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { cn } from '@/lib/utils';
-import { Badge } from './ui/badge';
 import React, { useMemo, useState, useEffect } from 'react';
 import { SearchDialog } from './search-dialog';
 
@@ -162,6 +161,7 @@ export default function AppSidebar() {
               </SheetTrigger>
               <SheetContent side="left" className="w-64 p-0 flex flex-col">
                 <SheetHeader className="border-b p-4">
+                   <SheetTitle className="sr-only">Main Menu</SheetTitle>
                    <Link href="/dashboard" aria-label="Go to dashboard">
                     <Logo className="flex items-center gap-2" />
                   </Link>

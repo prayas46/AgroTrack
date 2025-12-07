@@ -9,15 +9,21 @@ import { CropCard } from "./crop-card";
 import { cropData, type Crop, cropStages } from "./data";
 import { PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { AddCropDialog } from "./add-crop-dialog";
+import { AddOrUpdateCropDialog } from "./add-update-crop-dialog";
+import { ViewCropDialog } from "./view-crop-dialog";
 
 export default function CropManagementPage() {
   const [crops, setCrops] = useState<Crop[]>(cropData);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [dialogState, setDialogState] = useState<{
+    mode: 'add' | 'edit' | 'view' | null;
+    crop: Crop | null;
+  }>({ mode: null, crop: null });
+
   const { toast } = useToast();
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if (dialogState.mode) return; // Pause simulation when a dialog is open
       setCrops(prevCrops =>
         prevCrops.map(crop => {
           // Simulate health change
@@ -39,31 +45,46 @@ export default function CropManagementPage() {
     }, 5000); // Update every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [dialogState.mode]);
 
-  const handleAddCrop = (newCrop: Omit<Crop, 'id'>) => {
-    setCrops(prev => [
-      ...prev,
-      { ...newCrop, id: prev.length > 0 ? Math.max(...prev.map(c => c.id)) + 1 : 1 },
-    ]);
-    toast({
-      title: "Crop Added",
-      description: `${newCrop.name} has been added to your tracked crops.`,
-    });
+  const handleSaveCrop = (cropData: Omit<Crop, 'id'>, id?: number) => {
+    if (id) {
+        // Update existing crop
+        setCrops(prev => prev.map(c => c.id === id ? { ...c, ...cropData } : c));
+        toast({
+            title: "Crop Updated",
+            description: `${cropData.name} has been successfully updated.`,
+        });
+    } else {
+        // Add new crop
+        setCrops(prev => [
+            ...prev,
+            { ...cropData, id: prev.length > 0 ? Math.max(...prev.map(c => c.id)) + 1 : 1 },
+        ]);
+        toast({
+            title: "Crop Added",
+            description: `${cropData.name} has been added to your tracked crops.`,
+        });
+    }
+    setDialogState({ mode: null, crop: null });
   };
 
   const handleUpdate = (cropId: number) => {
-    toast({
-      title: "Feature Coming Soon",
-      description: `Updating crop #${cropId} is not yet implemented.`,
-    });
+    const cropToEdit = crops.find(c => c.id === cropId);
+    if (cropToEdit) {
+        setDialogState({ mode: 'edit', crop: cropToEdit });
+    }
   }
 
   const handleView = (cropId: number) => {
-     toast({
-      title: "Feature Coming Soon",
-      description: `A detailed view for crop #${cropId} is not yet implemented.`,
-    });
+     const cropToView = crops.find(c => c.id === cropId);
+    if (cropToView) {
+        setDialogState({ mode: 'view', crop: cropToView });
+    }
+  }
+
+  const closeDialog = () => {
+    setDialogState({ mode: null, crop: null });
   }
 
   return (
@@ -78,7 +99,7 @@ export default function CropManagementPage() {
           <CardTitle>Master Controls</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button onClick={() => setIsAddDialogOpen(true)}>
+          <Button onClick={() => setDialogState({ mode: 'add', crop: null })}>
             <PlusCircle className="mr-2 h-4 w-4" />
             Add New Crop
           </Button>
@@ -100,11 +121,20 @@ export default function CropManagementPage() {
           ))}
         </div>
       </div>
-      <AddCropDialog 
-        isOpen={isAddDialogOpen}
-        onClose={() => setIsAddDialogOpen(false)}
-        onAddCrop={handleAddCrop}
+      
+      <AddOrUpdateCropDialog
+        isOpen={dialogState.mode === 'add' || dialogState.mode === 'edit'}
+        onClose={closeDialog}
+        onSave={handleSaveCrop}
+        crop={dialogState.crop}
       />
+
+      <ViewCropDialog 
+        isOpen={dialogState.mode === 'view'}
+        onClose={closeDialog}
+        crop={dialogState.crop}
+      />
+
     </div>
   );
 }

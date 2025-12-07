@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect } from "react";
@@ -54,7 +53,7 @@ export function AddOrUpdateCropDialog({ isOpen, onClose, onSave, crop }: AddOrUp
         health: crop.health,
         area: crop.area,
       });
-    } else {
+    } else if (isOpen && !crop) {
       setFormState(initialFormState);
     }
   }, [isOpen, crop]);

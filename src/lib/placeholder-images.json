@@ -53,6 +53,12 @@
       "description": "Lush green crops growing in a field.",
       "imageUrl": "https://images.unsplash.com/photo-1492496913980-501348b61469?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
       "imageHint": "green crops"
+    },
+    {
+      "id": "equipment-card",
+      "description": "A modern tractor in a field at sunset.",
+      "imageUrl": "https://images.unsplash.com/photo-1563799009133-c203b543c494?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageHint": "farm tractor"
     }
   ]
 }

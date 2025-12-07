@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, Droplets, FileText, Sprout, Store, Stethoscope } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, Droplets, FileText, Sprout, Store, Stethoscope, Tractor } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -58,6 +58,13 @@ const features = [
     link: "/crop-management",
     icon: Sprout,
     image: PlaceHolderImages.find(img => img.id === "crop-management-card"),
+  },
+  {
+    title: "Equipment Tracking",
+    description: "Monitor the status, fuel levels, and efficiency of your farm equipment in real-time.",
+    link: "/equipment",
+    icon: Tractor,
+    image: PlaceHolderImages.find(img => img.id === "equipment-card"),
   },
   {
     title: "Government Schemes",

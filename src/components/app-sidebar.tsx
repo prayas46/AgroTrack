@@ -21,6 +21,7 @@ import {
   Stethoscope,
   Droplets,
   Sprout,
+  Tractor,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -33,6 +34,7 @@ const navItems = [
   { href: "/plant-doctor", icon: Stethoscope, label: "Plant Doctor" },
   { href: "/irrigation", icon: Droplets, label: "Irrigation" },
   { href: "/crop-management", icon: Sprout, label: "Crop Management" },
+  { href: "/equipment", icon: Tractor, label: "Equipment" },
   { href: "/govt-schemes", icon: FileText, label: "Govt. Schemes" },
 ];
 

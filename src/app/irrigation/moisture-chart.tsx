@@ -95,8 +95,8 @@ export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
               <defs>
                 {zones.map((zone) => (
                   <linearGradient key={`gradient_${zone.id}`} id={`gradient_${zone.id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={zoneColors[zone.id] || 'hsl(var(--foreground))'} stopOpacity={0.4} />
-                    <stop offset="95%" stopColor={zoneColors[zone.id] || 'hsl(var(--foreground))'} stopOpacity={0} />
+                    <stop offset="5%" stopColor={chartConfig[`zone_${zone.id}`]?.color} stopOpacity={0.4} />
+                    <stop offset="95%" stopColor={chartConfig[`zone_${zone.id}`]?.color} stopOpacity={0} />
                   </linearGradient>
                 ))}
               </defs>
@@ -122,10 +122,10 @@ export function MoistureChart({ moistureHistory, zones }: MoistureChartProps) {
                   dataKey={`zone_${zone.id}`}
                   type="monotone"
                   fill={`url(#gradient_${zone.id})`}
-                  stroke={zoneColors[zone.id] || 'hsl(var(--foreground))'}
+                  stroke={chartConfig[`zone_${zone.id}`]?.color}
                   strokeWidth={2}
                   dot={{
-                    fill: zoneColors[zone.id] || 'hsl(var(--foreground))',
+                    fill: chartConfig[`zone_${zone.id}`]?.color,
                     strokeWidth: 2,
                     r: 3,
                   }}

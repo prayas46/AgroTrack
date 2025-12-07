@@ -26,9 +26,9 @@
     },
     {
       "id": "soil-analysis-card",
-      "description": "A close-up of a person holding rich, dark soil in their hands.",
-      "imageUrl": "https://images.unsplash.com/photo-1594499468121-f45e83e3e46d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
-      "imageHint": "soil analysis"
+      "description": "Lush green crops growing in a field.",
+      "imageUrl": "https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "green crops"
     },
     {
       "id": "govt-schemes-card",
@@ -45,7 +45,7 @@
     {
       "id": "risk-map",
       "description": "A satellite map showing various regions with color-coded risk overlays.",
-      "imageUrl": "https://images.unsplash.com/photo-1536430291604-5e07b05f0592?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzYXRlbGxpdGUlMjBtYXB8ZW58MHx8fHwxNzY0OTM四MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1536430291604-5e07b05f0592?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzYXRlbGxpdGUlMjBtYXB8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "satellite map"
     },
     {

@@ -3,7 +3,8 @@
 
 import {
   collection,
-  addDoc,
+  doc,
+  setDoc,
   serverTimestamp,
   type Firestore,
 } from 'firebase/firestore';
@@ -11,6 +12,7 @@ import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 
 export type Report = {
+  id?: string;
   userId: string;
   title: string;
   type: 'Climate Risk' | 'Soil Analysis' | 'Profit Planner' | 'Plant Diagnosis';
@@ -28,34 +30,34 @@ export type Report = {
 export function createReport(
   firestore: Firestore,
   userId: string,
-  reportData: Omit<Report, 'userId' | 'createdAt'>
+  reportData: Omit<Report, 'userId' | 'createdAt' | 'id'>
 ) {
   if (!userId) {
     console.error('User must be authenticated to create a report.');
     return;
   }
 
-  const reportsCollection = collection(firestore, 'reports');
+  // Create a reference to a new document in the 'reports' collection
+  const newReportRef = doc(collection(firestore, 'reports'));
 
   const newReport: Report = {
     ...reportData,
+    id: newReportRef.id, // Add the generated ID to the document data
     userId: userId,
     createdAt: serverTimestamp(),
   };
 
-  // Non-blocking fire-and-forget write with error handling
-  addDoc(reportsCollection, newReport).catch((error) => {
+  // Use setDoc with the new document reference. This is compatible with serverTimestamp.
+  setDoc(newReportRef, newReport).catch((error) => {
     console.error('Error creating report:', error);
-    // Emit a detailed error for debugging, which will be caught by the FirebaseErrorListener
+    // Emit a detailed error for debugging
     errorEmitter.emit(
       'permission-error',
       new FirestorePermissionError({
-        path: reportsCollection.path,
+        path: newReportRef.path,
         operation: 'create',
         requestResourceData: newReport,
       })
     );
   });
 }
-
-    

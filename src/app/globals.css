@@ -4,47 +4,94 @@
 
 @layer base {
   :root {
+    /* Light theme - Earthy green/yellow palette */
     --background: 36 60% 98%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 240 10% 4%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 240 10% 4%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 84 39% 40%;
+    --popover-foreground: 240 10% 4%;
+    --primary: 84 39% 40%; /* Earthy green */
     --primary-foreground: 0 0% 100%;
-    --secondary: 44 86% 63%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 60 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --secondary: 44 86% 63%; /* Sunny yellow */
+    --secondary-foreground: 240 10% 4%;
+    --muted: 60 5% 96%;
+    --muted-foreground: 240 4% 46%;
     --accent: 44 86% 63%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
+    --accent-foreground: 240 10% 4%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 60 5.9% 90%;
-    --input: 60 5.9% 90%;
+    --border: 60 6% 90%;
+    --input: 60 6% 90%;
     --ring: 84 39% 40%;
     --radius: 0.5rem;
+    
+    /* Chart colors for data visualization */
+    --chart-1: 200 95% 55%;
+    --chart-2: 210 90% 65%;
+    --chart-3: 190 85% 60%;
+    --chart-4: 220 80% 70%;
+    --chart-5: 180 75% 50%;
+    --chart-6: 240 80% 75%;
+    --chart-7: 280 75% 70%;
+    --chart-8: 320 80% 70%;
+    --chart-9: 140 75% 55%;
+    --chart-10: 40 95% 55%;
+    
+    /* Sidebar colors - light theme */
+    --sidebar-background: 36 55% 96%;
+    --sidebar-foreground: 240 10% 4%;
+    --sidebar-primary: 84 39% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 44 86% 63%;
+    --sidebar-accent-foreground: 240 10% 4%;
+    --sidebar-border: 60 6% 88%;
+    --sidebar-ring: 84 39% 40%;
   }
+
   .dark {
+    /* Dark theme - Modified for better contrast */
     --background: 240 5% 10%;
     --foreground: 0 0% 98%;
     --card: 240 5% 12%;
     --card-foreground: 0 0% 98%;
     --popover: 240 5% 12%;
     --popover-foreground: 0 0% 98%;
-    --primary: 84 39% 40%;
+    --primary: 84 39% 45%; /* Slightly brighter for dark mode */
     --primary-foreground: 0 0% 100%;
     --secondary: 44 86% 63%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 20%;
-    --muted-foreground: 0 0% 63.9%;
+    --muted: 240 4% 20%;
+    --muted-foreground: 0 0% 64%;
     --accent: 44 86% 63%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 62.8% 30.6%;
+    --accent-foreground: 240 10% 4%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 20%;
-    --input: 240 3.7% 20%;
-    --ring: 84 39% 40%;
+    --border: 240 4% 20%;
+    --input: 240 4% 20%;
+    --ring: 84 39% 45%; /* Slightly brighter for dark mode */
+    
+    /* Chart colors for dark theme */
+    --chart-1: 200 95% 60%;
+    --chart-2: 210 90% 70%;
+    --chart-3: 190 85% 65%;
+    --chart-4: 220 80% 75%;
+    --chart-5: 180 75% 55%;
+    --chart-6: 240 80% 80%;
+    --chart-7: 280 75% 75%;
+    --chart-8: 320 80% 75%;
+    --chart-9: 140 75% 60%;
+    --chart-10: 40 95% 60%;
+    
+    /* Sidebar colors - dark theme */
+    --sidebar-background: 240 5% 12%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 84 39% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 44 86% 63%;
+    --sidebar-accent-foreground: 240 10% 4%;
+    --sidebar-border: 240 4% 22%;
+    --sidebar-ring: 84 39% 45%;
   }
 }
 
@@ -52,9 +99,91 @@
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Better scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+  
+  /* Selection styling */
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+  
+  /* Focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  
+  /* Smooth transitions */
+  * {
+    @apply transition-colors duration-200;
   }
 }
 
+@layer utilities {
+  /* Custom utilities */
+  .animate-in {
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+  }
+  
+  .fade-in {
+    animation-name: fadeIn;
+  }
+  
+  .slide-in-from-top {
+    animation-name: slideInFromTop;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

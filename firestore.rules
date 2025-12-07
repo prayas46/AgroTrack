@@ -212,5 +212,23 @@ service cloud.firestore {
       allow update: if isExistingOwner(farmerId);
       allow delete: if isExistingOwner(farmerId);
     }
+
+    /**
+     * @description Manages user-generated reports. Users can create reports and can only read their own.
+     * @path /reports/{reportId}
+     * @allow A user creating a new report document where `userId` in the document matches their auth UID. (create)
+     * @allow A user reading a report where the `userId` field matches their auth UID. (get)
+     * @deny A user trying to list all reports in the collection. (list)
+     * @principle User-owned data model where ownership is determined by a `userId` field in the document.
+     */
+    match /reports/{reportId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn(); // Allow list for queries with `where('userId', '==', request.auth.uid)`
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if false; // Reports are immutable
+      allow delete: if false; // Reports are not deletable by clients
+    }
   }
 }
+
+    

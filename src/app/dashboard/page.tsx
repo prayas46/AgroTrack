@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/page-header";
@@ -11,13 +12,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, Download, Droplets, FileText, FlaskConical, Sprout, Store, Stethoscope, Tractor } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, Download, Droplets, FileText, FlaskConical, Sprout, Store, Stethoscope, Tractor, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { useMemo } from "react";
+import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
+import { collection, query, where, orderBy, limit } from "firebase/firestore";
+import type { Report } from "@/lib/reports";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Define types for better TypeScript support
 interface Feature {
   title: string;
   description: string;
@@ -26,12 +30,6 @@ interface Feature {
   imageId: string;
 }
 
-interface Report {
-  title: string;
-  date: string;
-}
-
-// Pre-process features with image data
 const featuresWithImages: Feature[] = [
   {
     title: "Climate Risk Forecast",
@@ -98,17 +96,35 @@ const featuresWithImages: Feature[] = [
   },
 ];
 
-const recentReports: Report[] = [
-  { title: "Soil Analysis Report", date: "2024-03-01" },
-  { title: "Weekly Irrigation Report", date: "2024-02-28" },
-  { title: "Monthly Crop Yield Report", date: "2024-02-25" },
-  { title: "Equipment Maintenance Log", date: "2024-02-20" },
-];
+function ReportSkeleton() {
+  return (
+    <div className="flex items-center justify-between p-3">
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-48" />
+        <Skeleton className="h-3 w-32" />
+      </div>
+      <Skeleton className="h-9 w-9" />
+    </div>
+  )
+}
+
 
 export default function DashboardPage() {
   const { toast } = useToast();
+  const { firestore, user, isUserLoading } = useFirebase();
 
-  // Memoize the processed features to avoid recomputation on every render
+  const reportsQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(
+      collection(firestore, 'reports'),
+      where('userId', '==', user.uid),
+      orderBy('createdAt', 'desc'),
+      limit(5)
+    );
+  }, [firestore, user]);
+
+  const { data: recentReports, isLoading: areReportsLoading } = useCollection<Report>(reportsQuery);
+
   const processedFeatures = useMemo(() => {
     return featuresWithImages.map(feature => {
       const image = PlaceHolderImages.find(img => img.id === feature.imageId);
@@ -125,7 +141,7 @@ export default function DashboardPage() {
       description: `Your "${reportTitle}" is being prepared.`,
     });
     
-    // In a real app, you would generate and download the actual file here.
+    // This is a placeholder for a real download function.
     setTimeout(() => {
       toast({
         title: "Download Ready",
@@ -134,9 +150,11 @@ export default function DashboardPage() {
     }, 1500);
   };
 
-  // Format date for better display
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (timestamp: any) => {
+    if (!timestamp || !timestamp.toDate) {
+      return 'Just now';
+    }
+    const date = timestamp.toDate();
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -160,28 +178,40 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4" role="list">
-            {recentReports.map((report) => (
-              <div 
-                key={report.title} 
-                className="flex items-center justify-between p-3 -m-3 rounded-lg hover:bg-muted/50 transition-colors"
-                role="listitem"
-              >
-                <div>
-                  <p className="font-medium text-foreground">{report.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Generated: {formatDate(report.date)}
-                  </p>
+             {isUserLoading || areReportsLoading ? (
+                <>
+                  <ReportSkeleton/>
+                  <ReportSkeleton/>
+                  <ReportSkeleton/>
+                </>
+             ) : recentReports && recentReports.length > 0 ? (
+                recentReports.map((report) => (
+                  <div 
+                    key={report.id} 
+                    className="flex items-center justify-between p-3 -m-3 rounded-lg hover:bg-muted/50 transition-colors"
+                    role="listitem"
+                  >
+                    <div>
+                      <p className="font-medium text-foreground">{report.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Generated: {formatDate(report.createdAt)}
+                      </p>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => handleDownload(report.title)} 
+                      aria-label={`Download ${report.title}`}
+                    >
+                      <Download className="h-5 w-5" />
+                    </Button>
+                  </div>
+                ))
+             ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                    No reports generated yet.
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => handleDownload(report.title)} 
-                  aria-label={`Download ${report.title}`}
-                >
-                  <Download className="h-5 w-5" />
-                </Button>
-              </div>
-            ))}
+             )}
           </div>
         </CardContent>
       </Card>
@@ -198,7 +228,7 @@ export default function DashboardPage() {
                   fill
                   className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority={feature.imageId === "climate-risk-card"} // Prioritize first image
+                  priority={feature.imageId === "climate-risk-card"}
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -228,3 +258,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

@@ -10,8 +10,13 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import {
   LayoutDashboard,
   CloudSun,
@@ -84,19 +89,21 @@ export default function AppSidebar() {
         </div>
 
         <div className="md:hidden">
-           <Sidebar collapsible="offcanvas">
-            <SidebarTrigger asChild>
+          <Sheet>
+            <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <LayoutDashboard className="h-5 w-5" />
               </Button>
-            </SidebarTrigger>
-            <SidebarContent>
-              <SidebarHeader>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64 p-0">
+              <SheetHeader className='p-2'>
                 <Logo />
-              </SidebarHeader>
+              </SheetHeader>
+              <div className='p-2'>
               {mainNav}
-            </SidebarContent>
-          </Sidebar>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
         <nav className="hidden md:flex flex-1 items-center gap-6 text-sm font-medium">

@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -13,188 +12,331 @@ import {
   AlertDescription,
   AlertTitle,
 } from '@/components/ui/alert';
-import { Beaker, Droplets, FlaskConical, Leaf, Microscope, Sparkles, TestTube2, Download } from 'lucide-react';
+import { Beaker, Droplets, FlaskConical, Leaf, Microscope, Sparkles, TestTube2, Download, AlertCircle, CheckCircle2 } from 'lucide-react';
 import type { SoilAnalysisOutput } from '@/ai/flows/soil-analysis';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase';
 import { createReport, type CreateReportData } from '@/lib/reports';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 
 const getStatusColor = (status: string) => {
-    switch (status) {
-        case 'Optimal':
-        case 'Adequate':
-            return 'text-green-600 dark:text-green-400';
-        case 'Low':
-        case 'High':
-            return 'text-yellow-600 dark:text-yellow-400';
-        case 'Very Low':
-        case 'Very High':
-            return 'text-red-600 dark:text-red-400';
-        default:
-            return 'text-muted-foreground';
-    }
-}
+  switch (status) {
+    case 'Optimal':
+    case 'Adequate':
+      return {
+        text: 'text-green-600 dark:text-green-400',
+        bg: 'bg-green-50 dark:bg-green-900/20',
+        border: 'border-green-200 dark:border-green-800',
+        icon: CheckCircle2,
+      };
+    case 'Low':
+    case 'High':
+      return {
+        text: 'text-yellow-600 dark:text-yellow-400',
+        bg: 'bg-yellow-50 dark:bg-yellow-900/20',
+        border: 'border-yellow-200 dark:border-yellow-800',
+        icon: AlertCircle,
+      };
+    case 'Very Low':
+    case 'Very High':
+      return {
+        text: 'text-red-600 dark:text-red-400',
+        bg: 'bg-red-50 dark:bg-red-900/20',
+        border: 'border-red-200 dark:border-red-800',
+        icon: AlertCircle,
+      };
+    default:
+      return {
+        text: 'text-muted-foreground',
+        bg: 'bg-muted/30',
+        border: 'border-border',
+        icon: Microscope,
+      };
+  }
+};
 
 const parameterConfig = [
-    { key: 'ph', title: 'pH Level', icon: TestTube2, unit: '' },
-    { key: 'nitrogen', title: 'Nitrogen', icon: Leaf, unit: 'ppm' },
-    { key: 'phosphorus', title: 'Phosphorus', icon: Leaf, unit: 'ppm' },
-    { key: 'potassium', title: 'Potassium', icon: Leaf, unit: 'ppm' },
-    { key: 'moisture', title: 'Moisture', icon: Droplets, unit: '%' },
-    { key: 'organicMatter', title: 'Organic Matter', icon: Beaker, unit: '%' },
+  { key: 'ph', title: 'pH Level', icon: TestTube2, unit: '', idealRange: '6.0-7.0' },
+  { key: 'nitrogen', title: 'Nitrogen (N)', icon: Leaf, unit: 'ppm', idealRange: '20-40 ppm' },
+  { key: 'phosphorus', title: 'Phosphorus (P)', icon: Leaf, unit: 'ppm', idealRange: '15-30 ppm' },
+  { key: 'potassium', title: 'Potassium (K)', icon: Leaf, unit: 'ppm', idealRange: '150-250 ppm' },
+  { key: 'moisture', title: 'Moisture', icon: Droplets, unit: '%', idealRange: '25-35%' },
+  { key: 'organicMatter', title: 'Organic Matter', icon: Beaker, unit: '%', idealRange: '3-5%' },
 ] as const;
 
-export function SoilAnalysisResults({ data }: { data: SoilAnalysisOutput }) {
-    const { toast } = useToast();
-    const { firestore, user } = useFirebase();
+interface SoilAnalysisResultsProps {
+  data: SoilAnalysisOutput;
+  className?: string;
+}
 
-    const generateReportContent = () => {
-        let report = `
+export function SoilAnalysisResults({ data, className = '' }: SoilAnalysisResultsProps) {
+  const { toast } = useToast();
+  const { firestore, user } = useFirebase();
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [lastDownloaded, setLastDownloaded] = useState<Date | null>(null);
+
+  const generateReportContent = () => {
+    let report = `
 AGROCAST - SOIL ANALYSIS REPORT
-==============================
-Date: ${new Date().toLocaleDateString()}
-Time: ${new Date().toLocaleTimeString()}
+${'='.repeat(50)}
 
+Date: ${new Date().toLocaleDateString('en-US', { 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric' 
+})}
+Time: ${new Date().toLocaleTimeString('en-US', { 
+  hour: '2-digit', 
+  minute: '2-digit' 
+})}
+
+${'='.repeat(50)}
 OVERALL ASSESSMENT:
--------------------
+${'-'.repeat(25)}
 ${data.overallAssessment}
 
+${'='.repeat(50)}
 PARAMETER BREAKDOWN:
---------------------
+${'-'.repeat(25)}
 `;
-        parameterConfig.forEach(({ key, title, unit }) => {
-            const param = data.parameters[key];
-            report += `- ${title}: ${param.value}${unit} (${param.status})
-  - Interpretation: ${param.interpretation}\n`;
-        });
 
-        report += `
+    parameterConfig.forEach(({ key, title, unit, idealRange }) => {
+      const param = data.parameters[key];
+      report += `
+${title}:
+- Value: ${param.value}${unit}
+- Status: ${param.status}
+- Ideal Range: ${idealRange}
+- Interpretation: ${param.interpretation}
+${'-'.repeat(25)}`;
+    });
+
+    report += `
+${'='.repeat(50)}
 RECOMMENDATIONS:
-----------------
-- Fertilizer: ${data.recommendations.fertilizer}
-- Amendments: ${data.recommendations.amendments}
-- Irrigation: ${data.recommendations.irrigation}
+${'-'.repeat(25)}
+FERTILIZER:
+${data.recommendations.fertilizer}
 
+SOIL AMENDMENTS:
+${data.recommendations.amendments}
+
+IRRIGATION:
+${data.recommendations.irrigation}
+
+${'='.repeat(50)}
 PREDICTED IMPACT:
------------------
+${'-'.repeat(25)}
 ${data.predictedImpact}
 
+${'='.repeat(50)}
 GENERATED BY: AgroCast AI System
-© 2024 AgroCast - Smart Agriculture Management System
+© ${new Date().getFullYear()} AgroCast - Smart Agriculture Management System
 `;
-        return report;
-    };
 
-    const handleDownloadReport = async () => {
-        toast({
-            title: "Generating Report...",
-            description: "Your soil analysis report is being prepared for download.",
-        });
+    return report;
+  };
 
-        const reportTitle = `Soil Analysis Report - ${new Date().toISOString().split('T')[0]}`;
+  const formatFileName = () => {
+    const dateStr = new Date().toISOString().split('T')[0];
+    const timeStr = new Date().toISOString().split('T')[1].split('.')[0].replace(/:/g, '-');
+    return `AgroCast_Soil_Analysis_${dateStr}_${timeStr}.txt`;
+  };
+
+  const handleDownloadReport = async () => {
+    setIsDownloading(true);
+    
+    toast({
+      title: "Generating Report...",
+      description: "Your soil analysis report is being prepared for download.",
+    });
+
+    const reportTitle = `Soil Analysis Report - ${new Date().toLocaleDateString()}`;
+    
+    try {
+      // Save to Firebase if user is authenticated
+      if (firestore && user?.uid) {
+        const reportData: CreateReportData = {
+          title: reportTitle,
+          type: 'Soil Analysis',
+          content: {
+            ...data,
+            metadata: {
+              downloadedAt: new Date().toISOString(),
+              format: 'text/plain',
+              version: '1.0',
+            },
+          },
+          metadata: {
+            location: 'Field Analysis',
+            soilSampleId: `SAMPLE-${Date.now()}`,
+            analyzedAt: new Date().toISOString(),
+          },
+        };
         
-        try {
-            if (firestore && user) {
-                const reportData: CreateReportData = {
-                    title: reportTitle,
-                    type: 'Soil Analysis',
-                    content: data,
-                };
-                await createReport(firestore, user.uid, reportData);
-            }
+        await createReport(firestore, user.uid, reportData);
+      }
 
-            const reportContent = generateReportContent();
-            const blob = new Blob([reportContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `AgroCast_Soil_Analysis_Report_${new Date().toISOString().split('T')[0]}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            toast({
-                title: "Report Downloaded & Saved",
-                description: "The report has been saved to your device and logged in your dashboard.",
-            });
+      // Generate and download the file
+      const reportContent = generateReportContent();
+      const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = formatFileName();
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      setLastDownloaded(new Date());
+      
+      toast({
+        title: "Report Downloaded & Saved",
+        description: "The report has been saved to your device and logged in your dashboard.",
+        variant: "default",
+      });
 
-        } catch (error) {
-            toast({
-                variant: "destructive",
-                title: "Failed to Save Report",
-                description: "There was an error saving your report to the dashboard.",
-            });
-            console.error("Failed to create report:", error);
-        }
-    };
+    } catch (error: any) {
+      console.error("Failed to create report:", error);
+      
+      toast({
+        variant: "destructive",
+        title: "Failed to Save Report",
+        description: error.message || "There was an error processing your report.",
+      });
+      
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold tracking-tight font-headline">Analysis Results</h2>
-        <Button onClick={handleDownloadReport}>
-            <Download className="mr-2 h-4 w-4" />
-            Download & Save Report
+    <div className={`space-y-8 ${className}`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight font-headline">Analysis Results</h2>
+          {lastDownloaded && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Last downloaded: {lastDownloaded.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+              })}
+            </p>
+          )}
+        </div>
+        <Button 
+          onClick={handleDownloadReport} 
+          disabled={isDownloading}
+          className="w-full sm:w-auto"
+        >
+          <Download className="mr-2 h-4 w-4" />
+          {isDownloading ? 'Generating Report...' : 'Download & Save Report'}
         </Button>
       </div>
 
-        <Alert>
-            <FlaskConical className="h-4 w-4" />
-            <AlertTitle>Overall Assessment</AlertTitle>
-            <AlertDescription>{data.overallAssessment}</AlertDescription>
-        </Alert>
-
-        <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <Microscope className="h-6 w-6 text-primary" />
-                    Parameter Breakdown
-                </CardTitle>
-                <CardDescription>Detailed analysis of each soil component.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                 {parameterConfig.map(({ key, title, icon: Icon, unit }) => {
-                    const param = data.parameters[key];
-                    return (
-                        <div key={key} className="p-4 border rounded-lg space-y-2 bg-muted/20">
-                           <div className="flex items-center justify-between">
-                             <h3 className="font-semibold flex items-center gap-2 text-foreground">
-                                <Icon className="w-5 h-5 text-muted-foreground" />
-                                {title}
-                             </h3>
-                             <p className={`font-bold text-lg ${getStatusColor(param.status)}`}>{param.value}{unit}</p>
-                           </div>
-                           <p className={`text-sm font-medium ${getStatusColor(param.status)}`}>{param.status}</p>
-                           <p className="text-xs text-muted-foreground">{param.interpretation}</p>
-                        </div>
-                    );
-                })}
-            </CardContent>
-        </Card>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <Alert>
-            <AlertTitle>Fertilizer Recommendations</AlertTitle>
-            <AlertDescription>{data.recommendations.fertilizer}</AlertDescription>
-        </Alert>
-        <Alert>
-            <AlertTitle>Soil Amendment Recommendations</AlertTitle>
-            <AlertDescription>{data.recommendations.amendments}</AlertDescription>
-        </Alert>
-      </div>
       <Alert>
-            <AlertTitle>Irrigation Recommendations</AlertTitle>
-            <AlertDescription>{data.recommendations.irrigation}</AlertDescription>
+        <FlaskConical className="h-4 w-4" />
+        <AlertTitle>Overall Assessment</AlertTitle>
+        <AlertDescription className="text-base">{data.overallAssessment}</AlertDescription>
       </Alert>
 
-       <Alert variant="default" className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-            <Sparkles className="h-4 w-4 text-green-600 dark:text-green-400" />
-            <AlertTitle className="text-green-800 dark:text-green-300">Predicted Impact</AlertTitle>
-            <AlertDescription className="text-green-700 dark:text-green-400">{data.predictedImpact}</AlertDescription>
-        </Alert>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Microscope className="h-6 w-6 text-primary" />
+              Parameter Breakdown
+            </CardTitle>
+            <Badge variant="outline" className="text-xs">
+              {Object.keys(data.parameters).length} Parameters
+            </Badge>
+          </div>
+          <CardDescription>Detailed analysis of each soil component with ideal ranges.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {parameterConfig.map(({ key, title, icon: Icon, unit, idealRange }) => {
+              const param = data.parameters[key];
+              const statusColors = getStatusColor(param.status);
+              const StatusIcon = statusColors.icon;
+              
+              return (
+                <div 
+                  key={key} 
+                  className={`p-4 rounded-lg space-y-3 ${statusColors.bg} border ${statusColors.border}`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2">
+                      <Icon className="w-5 h-5 text-muted-foreground" />
+                      <h3 className="font-semibold text-foreground">{title}</h3>
+                    </div>
+                    <StatusIcon className="w-5 h-5" />
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-3xl font-bold">
+                        {param.value}
+                        <span className="text-sm font-normal ml-1">{unit}</span>
+                      </span>
+                      <span className={`font-medium ${statusColors.text}`}>
+                        {param.status}
+                      </span>
+                    </div>
+                    
+                    <div className="text-xs text-muted-foreground space-y-1">
+                      <div className="flex justify-between">
+                        <span>Ideal Range:</span>
+                        <span className="font-medium">{idealRange}</span>
+                      </div>
+                    </div>
+                    
+                    <p className="text-sm pt-2">{param.interpretation}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
+      <div className="grid md:grid-cols-3 gap-4">
+        <Alert>
+          <AlertTitle className="flex items-center gap-2">
+            <Leaf className="h-4 w-4" />
+            Fertilizer Recommendations
+          </AlertTitle>
+          <AlertDescription className="mt-2">{data.recommendations.fertilizer}</AlertDescription>
+        </Alert>
+        
+        <Alert>
+          <AlertTitle className="flex items-center gap-2">
+            <Beaker className="h-4 w-4" />
+            Soil Amendments
+          </AlertTitle>
+          <AlertDescription className="mt-2">{data.recommendations.amendments}</AlertDescription>
+        </Alert>
+        
+        <Alert>
+          <AlertTitle className="flex items-center gap-2">
+            <Droplets className="h-4 w-4" />
+            Irrigation Recommendations
+          </AlertTitle>
+          <AlertDescription className="mt-2">{data.recommendations.irrigation}</AlertDescription>
+        </Alert>
+      </div>
+
+      <Alert className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 border-green-200 dark:border-green-800">
+        <Sparkles className="h-5 w-5 text-green-600 dark:text-green-400" />
+        <AlertTitle className="text-green-800 dark:text-green-300">Predicted Impact</AlertTitle>
+        <AlertDescription className="text-green-700 dark:text-green-400 mt-2">
+          {data.predictedImpact}
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }

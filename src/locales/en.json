@@ -1,0 +1,54 @@
+
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "climateRisk": "Climate Risk",
+    "profitPlanner": "Profit Planner",
+    "marketplace": "Marketplace",
+    "plantDoctor": "Plant Doctor",
+    "soilAnalysis": "Soil Analysis",
+    "irrigation": "Irrigation",
+    "cropManagement": "Crop Management",
+    "equipment": "Equipment",
+    "govtSchemes": "Govt. Schemes"
+  },
+  "dashboard": {
+    "header": {
+        "title": "Welcome to AgroTrack",
+        "description": "Your autonomous partner for climate-adaptive agriculture. Plan, predict, and prosper."
+    },
+    "hero": {
+        "title": "Smart Farming, Brighter Future",
+        "description": "Leverage AI to make informed decisions, optimize resources, and secure your agricultural success."
+    },
+    "allFeatures": "All Features",
+    "goToFeature": "Go to Feature",
+    "reports": {
+        "title": "Recent Reports",
+        "description": "A summary of the latest generated reports.",
+        "generated": "Generated",
+        "noReports": "No reports generated yet.",
+        "justNow": "Just now"
+    },
+    "features": {
+        "climateRisk": "Climate Risk Forecast",
+        "climateRiskDescription": "Predict pest attacks, disease outbreaks, and extreme weather events with AI-powered forecasting.",
+        "profitPlanner": "Profit Prediction Engine",
+        "profitPlannerDescription": "Discover the most profitable crop combinations for your land, budget, and soil conditions.",
+        "marketplace": "Agro-Match Marketplace",
+        "marketplaceDescription": "Connect with buyers, suppliers, and logistics providers automatically through our smart marketplace.",
+        "plantDoctor": "Plant Doctor",
+        "plantDoctorDescription": "Upload an image of a plant to diagnose diseases and get fertilizer recommendations.",
+        "soilAnalysis": "Soil Analysis",
+        "soilAnalysisDescription": "Get AI-driven soil analysis and fertilizer recommendations based on your soil's composition.",
+        "irrigation": "Irrigation Management",
+        "irrigationDescription": "Monitor and control your farm's irrigation zones with real-time data and smart controls.",
+        "cropManagement": "Crop Management",
+        "cropManagementDescription": "Track the health and progress of your crops from planting to harvest.",
+        "equipment": "Equipment Tracking",
+        "equipmentDescription": "Monitor the status, fuel levels, and efficiency of your farm equipment in real-time.",
+        "govtSchemes": "Government Schemes",
+        "govtSchemesDescription": "Access important government schemes and manage your documents like your Aadhar card."
+    }
+  }
+}

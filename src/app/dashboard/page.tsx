@@ -21,10 +21,12 @@ import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
 import { collection, query, orderBy, limit } from "firebase/firestore";
 import type { Report } from "@/lib/reports";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/context/language-context";
 
 interface Feature {
-  title: string;
-  description: string;
+  id: string;
+  titleKey: keyof typeof import('@/locales/en.json')['dashboard']['features'];
+  descriptionKey: keyof typeof import('@/locales/en.json')['dashboard']['features'];
   link: string;
   icon: React.ComponentType<{ className?: string }>;
   imageId: string;
@@ -32,64 +34,73 @@ interface Feature {
 
 const featuresWithImages: Feature[] = [
   {
-    title: "Climate Risk Forecast",
-    description: "Predict pest attacks, disease outbreaks, and extreme weather events with AI-powered forecasting.",
+    id: "climate-risk",
+    titleKey: "climateRisk",
+    descriptionKey: "climateRiskDescription",
     link: "/climate-risk",
     icon: CloudSun,
     imageId: "climate-risk-card",
   },
   {
-    title: "Profit Prediction Engine",
-    description: "Discover the most profitable crop combinations for your land, budget, and soil conditions.",
+    id: "profit-planner",
+    titleKey: "profitPlanner",
+    descriptionKey: "profitPlannerDescription",
     link: "/profit-planner",
     icon: DollarSign,
     imageId: "profit-planner-card",
   },
   {
-    title: "Agro-Match Marketplace",
-    description: "Connect with buyers, suppliers, and logistics providers automatically through our smart marketplace.",
+    id: "marketplace",
+    titleKey: "marketplace",
+    descriptionKey: "marketplaceDescription",
     link: "/marketplace",
     icon: Store,
     imageId: "marketplace-card",
   },
   {
-    title: "Plant Doctor",
-    description: "Upload an image of a plant to diagnose diseases and get fertilizer recommendations.",
+    id: "plant-doctor",
+    titleKey: "plantDoctor",
+    descriptionKey: "plantDoctorDescription",
     link: "/plant-doctor",
     icon: Stethoscope,
     imageId: "plant-doctor-card",
   },
   {
-    title: "Soil Analysis",
-    description: "Get AI-driven soil analysis and fertilizer recommendations based on your soil's composition.",
+    id: "soil-analysis",
+    titleKey: "soilAnalysis",
+    descriptionKey: "soilAnalysisDescription",
     link: "/soil-analysis",
     icon: FlaskConical,
     imageId: "soil-analysis-card",
   },
   {
-    title: "Irrigation Management",
-    description: "Monitor and control your farm's irrigation zones with real-time data and smart controls.",
+    id: "irrigation",
+    titleKey: "irrigation",
+    descriptionKey: "irrigationDescription",
     link: "/irrigation",
     icon: Droplets,
     imageId: "irrigation-card",
   },
   {
-    title: "Crop Management",
-    description: "Track the health and progress of your crops from planting to harvest.",
+    id: "crop-management",
+    titleKey: "cropManagement",
+    descriptionKey: "cropManagementDescription",
     link: "/crop-management",
     icon: Sprout,
     imageId: "crop-management-card",
   },
   {
-    title: "Equipment Tracking",
-    description: "Monitor the status, fuel levels, and efficiency of your farm equipment in real-time.",
+    id: "equipment",
+    titleKey: "equipment",
+    descriptionKey: "equipmentDescription",
     link: "/equipment",
     icon: Tractor,
     imageId: "equipment-card",
   },
   {
-    title: "Government Schemes",
-    description: "Access important government schemes and manage your documents like your Aadhar card.",
+    id: "govt-schemes",
+    titleKey: "govtSchemes",
+    descriptionKey: "govtSchemesDescription",
     link: "/govt-schemes",
     icon: FileText,
     imageId: "govt-schemes-card",
@@ -110,6 +121,7 @@ function ReportSkeleton() {
 
 
 export default function DashboardPage() {
+  const { t } = useLanguage();
   const { toast } = useToast();
   const { firestore } = useFirebase();
 
@@ -131,10 +143,12 @@ export default function DashboardPage() {
       const image = PlaceHolderImages.find(img => img.id === feature.imageId);
       return {
         ...feature,
+        title: t('dashboard.features')[feature.titleKey],
+        description: t('dashboard.features')[feature.descriptionKey],
         image
       };
     });
-  }, []);
+  }, [t]);
 
   const handleDownload = (reportTitle: string) => {
     toast({
@@ -142,7 +156,6 @@ export default function DashboardPage() {
       description: `Your "${reportTitle}" is being prepared.`,
     });
     
-    // This is a placeholder for a real download function.
     setTimeout(() => {
       toast({
         title: "Download Ready",
@@ -153,7 +166,7 @@ export default function DashboardPage() {
 
   const formatDate = (timestamp: any) => {
     if (!timestamp || !timestamp.toDate) {
-      return 'Just now';
+      return t('dashboard.reports.justNow');
     }
     const date = timestamp.toDate();
     return date.toLocaleDateString('en-US', {
@@ -166,8 +179,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Welcome to AgroTrack"
-        description="Your autonomous partner for climate-adaptive agriculture. Plan, predict, and prosper."
+        title={t('dashboard.header.title')}
+        description={t('dashboard.header.description')}
       />
 
       {dashboardHeroImage && (
@@ -182,13 +195,13 @@ export default function DashboardPage() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-0 left-0 p-6">
-                <h2 className="text-3xl font-bold text-white tracking-tight">Smart Farming, Brighter Future</h2>
-                <p className="text-white/90 mt-2 max-w-2xl">Leverage AI to make informed decisions, optimize resources, and secure your agricultural success.</p>
+                <h2 className="text-3xl font-bold text-white tracking-tight">{t('dashboard.hero.title')}</h2>
+                <p className="text-white/90 mt-2 max-w-2xl">{t('dashboard.hero.description')}</p>
             </div>
         </div>
       )}
 
-      <h2 className="text-2xl font-bold tracking-tight pt-4">All Features</h2>
+      <h2 className="text-2xl font-bold tracking-tight pt-4">{t('dashboard.allFeatures')}</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {processedFeatures.map((feature) => (
           <Card key={feature.title} className="flex flex-col overflow-hidden group h-full">
@@ -200,7 +213,7 @@ export default function DashboardPage() {
                   fill
                   className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority={feature.imageId === "climate-risk-card"}
+                  priority={feature.id === "climate-risk"}
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -220,7 +233,7 @@ export default function DashboardPage() {
             <CardFooter className="mt-auto">
               <Button asChild variant="outline" className="w-full">
                 <Link href={feature.link}>
-                  Go to Feature <ArrowRight className="ml-2 h-4 w-4" />
+                  {t('dashboard.goToFeature')} <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </CardFooter>
@@ -230,9 +243,9 @@ export default function DashboardPage() {
 
        <Card className="mt-8">
         <CardHeader>
-          <CardTitle>Recent Reports</CardTitle>
+          <CardTitle>{t('dashboard.reports.title')}</CardTitle>
           <CardDescription>
-            A summary of the latest generated reports.
+            {t('dashboard.reports.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -253,7 +266,7 @@ export default function DashboardPage() {
                     <div>
                       <p className="font-medium text-foreground">{report.title}</p>
                       <p className="text-sm text-muted-foreground">
-                        Generated: {formatDate(report.createdAt)}
+                        {t('dashboard.reports.generated')}: {formatDate(report.createdAt)}
                       </p>
                     </div>
                     <Button 
@@ -268,7 +281,7 @@ export default function DashboardPage() {
                 ))
              ) : (
                 <div className="text-center py-8 text-muted-foreground">
-                    No reports generated yet.
+                    {t('dashboard.reports.noReports')}
                 </div>
              )}
           </div>

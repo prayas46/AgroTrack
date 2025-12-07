@@ -37,34 +37,35 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { useLanguage } from '@/context/language-context';
 
 const navItems = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', emoji: '📊' },
-  { href: '/climate-risk', icon: CloudSun, label: 'Climate Risk', emoji: '🌦️' },
-  { href: '/profit-planner', icon: DollarSign, label: 'Profit Planner', emoji: '💰' },
-  { href: '/marketplace', icon: Store, label: 'Marketplace', emoji: '🛒' },
-  { href: '/plant-doctor', icon: Stethoscope, label: 'Plant Doctor', emoji: '🩺' },
-  { href: '/soil-analysis', icon: FlaskConical, label: 'Soil Analysis', emoji: '🧪' },
-  { href: '/irrigation', icon: Droplets, label: 'Irrigation', emoji: '💧' },
-  { href: '/crop-management', icon: Sprout, label: 'Crop Management', emoji: '🌱' },
-  { href: '/equipment', icon: Tractor, label: 'Equipment', emoji: '🚜' },
-  { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes', emoji: '📄' },
+  { href: '/dashboard', icon: LayoutDashboard, labelKey: 'dashboard', emoji: '📊' },
+  { href: '/climate-risk', icon: CloudSun, labelKey: 'climateRisk', emoji: '🌦️' },
+  { href: '/profit-planner', icon: DollarSign, labelKey: 'profitPlanner', emoji: '💰' },
+  { href: '/marketplace', icon: Store, labelKey: 'marketplace', emoji: '🛒' },
+  { href: '/plant-doctor', icon: Stethoscope, labelKey: 'plantDoctor', emoji: '🩺' },
+  { href: '/soil-analysis', icon: FlaskConical, labelKey: 'soilAnalysis', emoji: '🧪' },
+  { href: '/irrigation', icon: Droplets, labelKey: 'irrigation', emoji: '💧' },
+  { href: '/crop-management', icon: Sprout, labelKey: 'cropManagement', emoji: '🌱' },
+  { href: '/equipment', icon: Tractor, labelKey: 'equipment', emoji: '🚜' },
+  { href: '/govt-schemes', icon: FileText, labelKey: 'govtSchemes', emoji: '📄' },
 ] as const;
 
-const languages = [
-    { code: 'en', name: 'English' },
-    { code: 'hi', name: 'हिन्दी' },
-    { code: 'bn', name: 'বাংলা' },
-    { code: 'ta', name: 'தமிழ்' },
-    { code: 'te', name: 'తెలుగు' },
-    { code: 'or', name: 'ଓଡ଼ିଆ' },
-    { code: 'ur', name: 'اردو' },
-];
+type NavItemLabelKey = typeof navItems[number]['labelKey'];
 
 
 export default function AppSidebar() {
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
+  const { t, setLanguage, languages } = useLanguage();
+
+  const translatedNavItems = useMemo(() => {
+    return navItems.map(item => ({
+        ...item,
+        label: t('sidebar')[item.labelKey as NavItemLabelKey] || item.labelKey,
+    }));
+  }, [t]);
   
   // Memoize active path check for performance
   const isActivePath = useMemo(() => {
@@ -90,7 +91,7 @@ export default function AppSidebar() {
 
   const mainNav = (
     <nav className="flex flex-col gap-1 p-2" aria-label="Main navigation">
-      {navItems.map((item) => {
+      {translatedNavItems.map((item) => {
         const active = isActivePath(item.href);
         return (
           <SheetClose key={item.href} asChild>
@@ -113,7 +114,7 @@ export default function AppSidebar() {
 
   const desktopNav = (
     <nav className="hidden md:flex flex-1 items-center gap-1 text-sm font-medium overflow-x-auto scrollbar-hide" aria-label="Main navigation">
-      {navItems.map((item) => {
+      {translatedNavItems.map((item) => {
         const active = isActivePath(item.href);
         return (
           <Link
@@ -213,11 +214,8 @@ export default function AppSidebar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-40" align="end">
                 {languages.map((lang) => (
-                    <DropdownMenuItem key={lang.code} asChild>
-                         {/* In a real app, this would trigger a language change */}
-                        <a href={`#${lang.code}`} className="cursor-pointer">
-                            {lang.name}
-                        </a>
+                    <DropdownMenuItem key={lang.code} onSelect={() => setLanguage(lang.code)}>
+                      {lang.name}
                     </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -226,7 +224,7 @@ export default function AppSidebar() {
           </div>
         </div>
       </header>
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} navItems={navItems} />
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} navItems={translatedNavItems} />
     </>
   );
 }

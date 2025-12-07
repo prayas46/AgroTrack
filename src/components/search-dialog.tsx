@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 interface SearchDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    navItems: readonly {
+    navItems: {
         href: string;
         label: string;
         icon: React.ElementType;

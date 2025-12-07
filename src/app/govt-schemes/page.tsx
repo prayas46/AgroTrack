@@ -28,7 +28,7 @@ const schemes = [
 ]
 
 export default function GovtSchemesPage() {
-  const govtSchemeImage = PlaceHolderImages.find(img => img.id === 'govt-schemes-card');
+  const govtSchemeImage = PlaceHolderImages.find(img => img.id === 'govt-schemes-header');
 
   return (
     <div className="space-y-8">

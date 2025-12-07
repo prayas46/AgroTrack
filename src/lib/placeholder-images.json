@@ -31,6 +31,12 @@
       "imageHint": "government emblem"
     },
     {
+      "id": "govt-schemes-header",
+      "description": "An Indian farmer working in a field, representing agricultural government support.",
+      "imageUrl": "https://images.unsplash.com/photo-1620221192984-b4e67c8b9a1e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxJbmRpYW4lMjBmYXJtZXJ8ZW58MHx8fHwxNzE2NTkwOTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "indian farmer"
+    },
+    {
       "id": "risk-map",
       "description": "A satellite map showing various regions with color-coded risk overlays.",
       "imageUrl": "https://images.unsplash.com/photo-1536430291604-5e07b05f0592?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzYXRlbGxpdGUlMjBtYXB8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",

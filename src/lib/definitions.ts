@@ -24,11 +24,13 @@ export const MarketplaceFormSchema = z.object({
   desiredPartners: z.array(z.enum(['buyers', 'suppliers', 'storage units', 'transport providers'])).min(1, "Please select at least one partner type."),
 });
 
-export const PlantDoctorFormSchema = z.object({
-    plantImage: z
+const fileSchema = z
     .any()
-    .refine((file) => file, "Image is required.")
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine((file) => file, "File is required.")
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`);
+
+export const PlantDoctorFormSchema = z.object({
+    plantImage: fileSchema
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
       "Only .jpg, .jpeg, .png and .webp formats are supported."
@@ -41,10 +43,7 @@ export const PlantDoctorFormSchema = z.object({
 });
 
 export const AadharUploadFormSchema = z.object({
-    aadharPdf: z
-    .any()
-    .refine((file) => file, "Aadhar card PDF is required.")
-    .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+    aadharPdf: fileSchema
     .refine(
       (file) => ACCEPTED_PDF_TYPES.includes(file.type),
       "Only .pdf format is supported."
@@ -59,4 +58,3 @@ export const SoilAnalysisFormSchema = z.object({
     moisture: z.coerce.number().min(0).max(100, "Moisture must be between 0 and 100."),
     organicMatter: z.coerce.number().min(0).max(100, "Organic matter must be between 0 and 100."),
 });
-

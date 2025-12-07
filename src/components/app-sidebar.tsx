@@ -1,4 +1,3 @@
-
 'use client';
 
 import { usePathname } from 'next/navigation';
@@ -8,6 +7,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTrigger,
+  SheetClose,
 } from '@/components/ui/sheet';
 import {
   LayoutDashboard,
@@ -25,6 +25,8 @@ import {
   Settings,
   HelpCircle,
   Menu,
+  Bell,
+  Search,
 } from 'lucide-react';
 import { Logo } from './logo';
 import { Button } from './ui/button';
@@ -36,9 +38,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import { Badge } from './ui/badge';
+import React, { useMemo } from 'react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', emoji: '📊' },
@@ -51,88 +54,183 @@ const navItems = [
   { href: '/crop-management', icon: Sprout, label: 'Crop Management', emoji: '🌱' },
   { href: '/equipment', icon: Tractor, label: 'Equipment', emoji: '🚜' },
   { href: '/govt-schemes', icon: FileText, label: 'Govt. Schemes', emoji: '📄' },
-];
+] as const;
 
 export default function AppSidebar() {
   const pathname = usePathname();
+  
+  // Memoize active path check for performance
+  const isActivePath = useMemo(() => {
+    return (href: string) => {
+      if (href === '/dashboard') {
+        return pathname === '/dashboard';
+      }
+      return pathname.startsWith(href);
+    };
+  }, [pathname]);
 
   const mainNav = (
-    <nav className="flex flex-col gap-1 p-2">
-      {navItems.map((item) => (
-        <Button
-          key={item.href}
-          asChild
-          variant={pathname === item.href ? 'secondary' : 'ghost'}
-          className="justify-start"
-        >
-          <Link href={item.href}>
-            <item.icon className="mr-2 h-4 w-4" />
-            {item.label}
+    <nav className="flex flex-col gap-1 p-2" aria-label="Main navigation">
+      {navItems.map((item) => {
+        const active = isActivePath(item.href);
+        return (
+          <SheetClose key={item.href} asChild>
+            <Button
+              asChild
+              variant={active ? 'secondary' : 'ghost'}
+              className="justify-start h-11"
+              aria-current={active ? 'page' : undefined}
+            >
+              <Link href={item.href}>
+                <item.icon className="mr-3 h-4 w-4 flex-shrink-0" />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            </Button>
+          </SheetClose>
+        );
+      })}
+    </nav>
+  );
+
+  const desktopNav = (
+    <nav className="hidden md:flex flex-1 items-center gap-1 text-sm font-medium overflow-x-auto scrollbar-hide" aria-label="Main navigation">
+      {navItems.map((item) => {
+        const active = isActivePath(item.href);
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={cn(
+              'relative px-3 py-2 rounded-md transition-all flex items-center gap-2 min-w-fit',
+              active 
+                ? 'bg-accent text-accent-foreground font-semibold' 
+                : 'text-foreground/70 hover:bg-accent/50 hover:text-accent-foreground'
+            )}
+            aria-current={active ? 'page' : undefined}
+          >
+            <span role="img" aria-label={item.label}>{item.emoji}</span>
+            <span className="whitespace-nowrap">{item.label}</span>
+            {active && (
+              <span 
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" 
+                aria-hidden="true"
+              />
+            )}
           </Link>
-        </Button>
-      ))}
+        );
+      })}
     </nav>
   );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-7xl items-center">
+      <div className="container flex h-16 max-w-7xl items-center gap-4">
+        {/* Logo - Desktop */}
         <div className="mr-4 hidden md:flex">
-          <Logo />
+          <Link href="/dashboard" aria-label="Go to dashboard">
+            <Logo />
+          </Link>
         </div>
 
-        {/* Mobile Nav */}
-        <div className="md:hidden">
+        {/* Mobile Navigation */}
+        <div className="md:hidden flex items-center gap-2">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="h-9 w-9"
+                aria-label="Open menu"
+              >
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-60 p-0">
+            <SheetContent side="left" className="w-64 p-0 flex flex-col">
               <SheetHeader className="border-b p-4">
                 <Logo />
               </SheetHeader>
-              {mainNav}
+              <div className="flex-1 overflow-y-auto">
+                {mainNav}
+              </div>
+              <div className="border-t p-4">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src="/avatar.jpg" alt="User avatar" />
+                    <AvatarFallback className="bg-primary text-primary-foreground">DU</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">Demo User</p>
+                    <p className="text-xs text-muted-foreground truncate">farmer@agrotrack.com</p>
+                  </div>
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
+          
+          {/* Mobile Logo */}
+          <Link href="/dashboard" className="flex items-center" aria-label="Go to dashboard">
+            <Logo />
+          </Link>
         </div>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex flex-1 items-center gap-2 text-sm font-medium">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'relative px-3 py-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground flex items-center gap-2',
-                  isActive ? 'bg-accent text-accent-foreground' : 'text-foreground/60'
-                )}
-              >
-                <>
-                  <span suppressHydrationWarning>{item.emoji}</span>
-                  {item.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-primary rounded-full" />
-                  )}
-                </>
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Desktop Navigation */}
+        {desktopNav}
 
-        <div className="flex flex-1 items-center justify-end gap-4">
+        {/* Right Side Actions */}
+        <div className="flex items-center justify-end gap-2">
+          {/* Search - Desktop Only */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden md:flex h-9 w-9"
+            aria-label="Search"
+          >
+            <Search className="h-4 w-4" />
+          </Button>
+
+          {/* Notifications */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="relative h-10 w-10 rounded-full"
+                size="icon"
+                className="relative h-9 w-9"
+                aria-label="Notifications"
               >
-                <Avatar className="h-9 w-9">
-                    <AvatarFallback className='bg-primary text-primary-foreground'>U</AvatarFallback>
+                <Bell className="h-4 w-4" />
+                <Badge 
+                  className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center"
+                  variant="destructive"
+                >
+                  3
+                </Badge>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80">
+              <DropdownMenuLabel>Notifications (3)</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="max-h-80 overflow-y-auto">
+                {/* Notification items would go here */}
+                <div className="p-3 text-sm text-muted-foreground text-center">
+                  Your notifications will appear here
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="relative h-10 w-10 rounded-full p-0"
+                aria-label="User menu"
+              >
+                <Avatar className="h-10 w-10 border-2 border-background">
+                  <AvatarImage src="/avatar.jpg" alt="Demo User" />
+                  <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                    DU
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -140,26 +238,32 @@ export default function AppSidebar() {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none">Demo User</p>
-                  <p className="text-xs leading-none text-muted-foreground">
+                  <p className="text-xs leading-none text-muted-foreground truncate">
                     farmer@agrotrack.com
                   </p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+              <DropdownMenuItem asChild>
+                <Link href="/profile" className="cursor-pointer">
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <HelpCircle className="mr-2 h-4 w-4" />
-                <span>Help</span>
+              <DropdownMenuItem asChild>
+                <Link href="/help" className="cursor-pointer">
+                  <HelpCircle className="mr-2 h-4 w-4" />
+                  <span>Help & Support</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive focus:text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>

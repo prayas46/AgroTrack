@@ -189,7 +189,47 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <Card>
+      <h2 className="text-2xl font-bold tracking-tight pt-4">All Features</h2>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {processedFeatures.map((feature) => (
+          <Card key={feature.title} className="flex flex-col overflow-hidden group h-full">
+            <div className="relative h-48 w-full overflow-hidden bg-muted/50">
+              {feature.image ? (
+                <Image
+                  src={feature.image.imageUrl}
+                  alt={feature.image.description}
+                  fill
+                  className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={feature.imageId === "climate-risk-card"}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <feature.icon className="h-12 w-12 text-muted-foreground/50" />
+                </div>
+              )}
+            </div>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <feature.icon className="h-6 w-6 text-primary" />
+                {feature.title}
+              </CardTitle>
+              <CardDescription className="line-clamp-2">
+                {feature.description}
+              </CardDescription>
+            </CardHeader>
+            <CardFooter className="mt-auto">
+              <Button asChild variant="outline" className="w-full">
+                <Link href={feature.link}>
+                  Go to Feature <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+       <Card className="mt-8">
         <CardHeader>
           <CardTitle>Recent Reports</CardTitle>
           <CardDescription>
@@ -235,48 +275,6 @@ export default function DashboardPage() {
           </div>
         </CardContent>
       </Card>
-
-      <h2 className="text-2xl font-bold tracking-tight pt-4">All Features</h2>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {processedFeatures.map((feature) => (
-          <Card key={feature.title} className="flex flex-col overflow-hidden group h-full">
-            <div className="relative h-48 w-full overflow-hidden bg-muted/50">
-              {feature.image ? (
-                <Image
-                  src={feature.image.imageUrl}
-                  alt={feature.image.description}
-                  fill
-                  className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  priority={feature.imageId === "climate-risk-card"}
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <feature.icon className="h-12 w-12 text-muted-foreground/50" />
-                </div>
-              )}
-            </div>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <feature.icon className="h-6 w-6 text-primary" />
-                {feature.title}
-              </CardTitle>
-              <CardDescription className="line-clamp-2">
-                {feature.description}
-              </CardDescription>
-            </CardHeader>
-            <CardFooter className="mt-auto">
-              <Button asChild variant="outline" className="w-full">
-                <Link href={feature.link}>
-                  Go to Feature <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
     </div>
   );
 }
-
-    

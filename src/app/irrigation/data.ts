@@ -11,6 +11,13 @@ export type Zone = {
   wind: number;
 };
 
+export type MoistureHistory = {
+  time: string;
+  readings: {
+    [key: number]: number;
+  };
+};
+
 export const irrigationZones: Zone[] = [
   { id: 1, name: 'North Field', moisture: 68, status: 'idle', area: '2.5 ha', temp: 24, wind: 5 },
   { id: 2, name: 'South Field', moisture: 72, status: 'idle', area: '3.0 ha', temp: 25, wind: 7 },

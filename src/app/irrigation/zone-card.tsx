@@ -18,7 +18,7 @@ const statusConfig = {
   active: {
     variant: "default",
     label: "Active",
-    className: "border-blue-500",
+    className: "border-blue-500 bg-blue-500/10",
   },
   idle: {
     variant: "secondary",
@@ -28,17 +28,17 @@ const statusConfig = {
   warning: {
     variant: "outline",
     label: "Warning",
-    className: "border-yellow-500",
+    className: "border-yellow-500 bg-yellow-500/10",
   },
   critical: {
     variant: "destructive",
     label: "Critical",
-    className: "border-red-600",
+    className: "border-red-600 bg-red-500/10",
   },
   good: {
       variant: "secondary",
       label: "Good",
-      className: "border-green-500"
+      className: "border-green-500 bg-green-500/10"
   }
 };
 
@@ -55,7 +55,7 @@ export function ZoneCard({ zone, onToggle }: ZoneCardProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>{zone.name}</CardTitle>
-          <Badge variant={config.variant}>{config.label}</Badge>
+          <Badge variant={config.variant} className="capitalize">{config.label}</Badge>
         </div>
         <CardDescription>{zone.area}</CardDescription>
       </CardHeader>
@@ -79,7 +79,7 @@ export function ZoneCard({ zone, onToggle }: ZoneCardProps) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={() => onToggle(zone.id)} variant="outline" className="w-full">
+        <Button onClick={() => onToggle(zone.id)} variant="outline" className="w-full" disabled={zone.status === 'critical'}>
           {zone.status === "active" ? "Pause Zone" : "Activate Zone"}
         </Button>
       </CardFooter>

@@ -20,6 +20,7 @@ import {
   FileText,
   Stethoscope,
   Droplets,
+  Sprout,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -31,6 +32,7 @@ const navItems = [
   { href: "/marketplace", icon: Store, label: "Marketplace" },
   { href: "/plant-doctor", icon: Stethoscope, label: "Plant Doctor" },
   { href: "/irrigation", icon: Droplets, label: "Irrigation" },
+  { href: "/crop-management", icon: Sprout, label: "Crop Management" },
   { href: "/govt-schemes", icon: FileText, label: "Govt. Schemes" },
 ];
 

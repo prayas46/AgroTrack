@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -26,6 +27,7 @@ export const MarketplaceFormSchema = z.object({
 export const PlantDoctorFormSchema = z.object({
     plantImage: z
     .any()
+    .refine((file) => file, "Image is required.")
     .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
@@ -40,7 +42,8 @@ export const PlantDoctorFormSchema = z.object({
 
 export const AadharUploadFormSchema = z.object({
     aadharPdf: z
-    .instanceof(File, { message: "Aadhar card PDF is required."})
+    .any()
+    .refine((file) => file, "Aadhar card PDF is required.")
     .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
     .refine(
       (file) => ACCEPTED_PDF_TYPES.includes(file.type),
@@ -56,3 +59,4 @@ export const SoilAnalysisFormSchema = z.object({
     moisture: z.coerce.number().min(0).max(100, "Moisture must be between 0 and 100."),
     organicMatter: z.coerce.number().min(0).max(100, "Organic matter must be between 0 and 100."),
 });
+

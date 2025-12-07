@@ -1,6 +1,7 @@
+
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Sheet,
@@ -42,6 +43,8 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { cn } from '@/lib/utils';
 import React, { useMemo, useState, useEffect } from 'react';
 import { SearchDialog } from './search-dialog';
+import { logout } from '@/lib/actions';
+import { useAuth } from '@/hooks/use-auth';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', emoji: '📊' },
@@ -58,8 +61,24 @@ const navItems = [
 
 export default function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
+  const { user, isUserLoading } = useAuth();
   
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+  };
+
+  const userInitials = useMemo(() => {
+    if (!user?.displayName) return '...';
+    const names = user.displayName.split(' ');
+    if (names.length > 1) {
+      return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+    }
+    return user.displayName.substring(0, 2).toUpperCase();
+  }, [user]);
+
   // Memoize active path check for performance
   const isActivePath = useMemo(() => {
     return (href: string) => {
@@ -172,12 +191,12 @@ export default function AppSidebar() {
                 <div className="border-t p-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src="/avatar.jpg" alt="User avatar" />
-                      <AvatarFallback className="bg-primary text-primary-foreground">DU</AvatarFallback>
+                      <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
+                      <AvatarFallback className="bg-primary text-primary-foreground">{userInitials}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">Demo User</p>
-                      <p className="text-xs text-muted-foreground truncate">farmer@agrotrack.com</p>
+                      <p className="text-sm font-medium truncate">{user?.displayName || "Guest"}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user?.email || "Not logged in"}</p>
                     </div>
                   </div>
                 </div>
@@ -215,9 +234,9 @@ export default function AppSidebar() {
                   aria-label="User menu"
                 >
                   <Avatar className="h-10 w-10 border-2 border-background">
-                    <AvatarImage src="/avatar.jpg" alt="Demo User" />
+                    <AvatarImage src={user?.photoURL || undefined} alt={user?.displayName || "User"} />
                     <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                      DU
+                      {isUserLoading ? '...' : userInitials}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -225,9 +244,9 @@ export default function AppSidebar() {
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Demo User</p>
+                    <p className="text-sm font-medium leading-none">{isUserLoading ? "Loading..." : user?.displayName}</p>
                     <p className="text-xs leading-none text-muted-foreground truncate">
-                      farmer@agrotrack.com
+                      {isUserLoading ? "" : user?.email}
                     </p>
                   </div>
                 </DropdownMenuLabel>
@@ -251,7 +270,7 @@ export default function AppSidebar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive focus:text-destructive">
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
@@ -264,3 +283,5 @@ export default function AppSidebar() {
     </>
   );
 }
+
+    

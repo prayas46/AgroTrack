@@ -3,9 +3,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { AuthProvider } from "@/hooks/use-auth";
 import AppSidebar from "@/components/app-sidebar";
-import { FirebaseClientProvider } from "@/firebase/client-provider";
 
 export const metadata: Metadata = {
   title: "AgroTrack",
@@ -28,7 +27,7 @@ export default function RootLayout({
         />
       </head>
       <body className={cn("font-body antialiased")}>
-        <FirebaseClientProvider>
+        <AuthProvider>
           <div className="relative flex min-h-screen w-full flex-col">
             <AppSidebar />
             <main className="flex-1">
@@ -38,7 +37,7 @@ export default function RootLayout({
             </main>
           </div>
           <Toaster />
-        </FirebaseClientProvider>
+        </AuthProvider>
       </body>
     </html>
   );

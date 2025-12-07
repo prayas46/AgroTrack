@@ -23,6 +23,7 @@
  * Denormalization for Authorization: To maintain simple and performant rules,
  * ownership is determined by the `farmerId` in the document path. Sub-collections like
  * `/farms` contain a `farmerId` field within their data to enforce relational
+
  * integrity on creation and prevent re-parenting on update. This avoids costly `get()`
  * calls to parent documents.
  *
@@ -91,6 +92,19 @@ service cloud.firestore {
       return request.resource.data.farmerId == resource.data.farmerId;
     }
 
+
+    /**
+     * @description Manages user profile documents.
+     * @path /users/{userId}
+     * @allow A user can create, read, and update their own profile.
+     * @deny Users cannot delete their profiles or access others' profiles.
+     */
+    match /users/{userId} {
+      allow read, update: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.uid == userId;
+      allow delete: if false;
+      allow list: if false;
+    }
 
     /**
      * @description Manages farmer profile documents. Each farmer can create their own profile, but cannot see or list others.

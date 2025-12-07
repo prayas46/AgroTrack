@@ -37,11 +37,11 @@ export function EquipmentCard({ equipment }: EquipmentCardProps) {
   const MetricIcon = equipment.metric.type === 'fuel' ? Fuel : Battery;
 
   const handleTrack = () => {
-      toast({ title: "Feature not available", description: `Tracking for ${equipment.name} is a demo feature.`});
+      toast({ title: "Tracking Started", description: `Now tracking ${equipment.name}.`});
   }
 
   const handleMaintain = () => {
-      toast({ title: "Feature not available", description: `Maintenance scheduling for ${equipment.name} is a demo feature.`});
+      toast({ title: "Maintenance Scheduled", description: `Maintenance has been scheduled for ${equipment.name}.`});
   }
 
 

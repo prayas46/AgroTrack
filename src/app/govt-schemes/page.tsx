@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Upload, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 const schemes = [
     {
@@ -26,12 +28,27 @@ const schemes = [
 ]
 
 export default function GovtSchemesPage() {
+  const govtSchemeImage = PlaceHolderImages.find(img => img.id === 'govt-schemes-card');
+
   return (
     <div className="space-y-8">
       <PageHeader
         title="Government Schemes & Documents"
         description="Access important government schemes and manage your documents."
       />
+
+      {govtSchemeImage && (
+        <div className="relative h-64 w-full overflow-hidden rounded-lg border">
+          <Image
+            src={govtSchemeImage.imageUrl}
+            alt={govtSchemeImage.description}
+            fill
+            className="object-cover"
+            data-ai-hint={govtSchemeImage.imageHint}
+          />
+        </div>
+      )}
+
       <div className="grid gap-8 md:grid-cols-2">
         <Card>
           <CardHeader>

@@ -1,6 +1,12 @@
 {
   "placeholderImages": [
     {
+      "id": "dashboard-hero",
+      "description": "A beautiful wide shot of a lush green farm at sunrise, with rows of crops stretching into the distance.",
+      "imageUrl": "https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "farm sunrise"
+    },
+    {
       "id": "climate-risk-card",
       "description": "A visual representation of weather patterns over a field.",
       "imageUrl": "https://images.unsplash.com/photo-1711397651462-3b2a22f5cfc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3ZWF0aGVyJTIwYWdyaWN1bHR1cmV8ZW58MHx8fHwxNzY0OTM0MzE2fDA&ixlib=rb-4.1.0&q=80&w=1080",

@@ -113,6 +113,8 @@ export default function DashboardPage() {
   const { toast } = useToast();
   const { firestore, user, isUserLoading } = useFirebase();
 
+  const dashboardHeroImage = PlaceHolderImages.find(img => img.id === 'dashboard-hero');
+
   const reportsQuery = useMemoFirebase(() => {
     if (!firestore || !user) return null;
     return query(
@@ -168,6 +170,24 @@ export default function DashboardPage() {
         title="Welcome to AgroCast"
         description="Your autonomous partner for climate-adaptive agriculture. Plan, predict, and prosper."
       />
+
+      {dashboardHeroImage && (
+        <div className="relative h-64 md:h-80 w-full overflow-hidden rounded-lg border group">
+            <Image
+                src={dashboardHeroImage.imageUrl}
+                alt={dashboardHeroImage.description}
+                fill
+                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                data-ai-hint={dashboardHeroImage.imageHint}
+                priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <div className="absolute bottom-0 left-0 p-6">
+                <h2 className="text-3xl font-bold text-white tracking-tight">Smart Farming, Brighter Future</h2>
+                <p className="text-white/90 mt-2 max-w-2xl">Leverage AI to make informed decisions, optimize resources, and secure your agricultural success.</p>
+            </div>
+        </div>
+      )}
 
       <Card>
         <CardHeader>

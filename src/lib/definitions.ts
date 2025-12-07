@@ -47,3 +47,12 @@ export const AadharUploadFormSchema = z.object({
       "Only .pdf format is supported."
     )
 });
+
+export const SoilAnalysisFormSchema = z.object({
+    ph: z.coerce.number().min(0).max(14, "pH must be between 0 and 14."),
+    nitrogen: z.coerce.number().min(0, "Nitrogen cannot be negative."),
+    phosphorus: z.coerce.number().min(0, "Phosphorus cannot be negative."),
+    potassium: z.coerce.number().min(0, "Potassium cannot be negative."),
+    moisture: z.coerce.number().min(0).max(100, "Moisture must be between 0 and 100."),
+    organicMatter: z.coerce.number().min(0).max(100, "Organic matter must be between 0 and 100."),
+});

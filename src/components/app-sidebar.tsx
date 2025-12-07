@@ -22,6 +22,7 @@ import {
   Droplets,
   Sprout,
   Tractor,
+  FlaskConical,
 } from "lucide-react";
 import { Logo } from "./logo";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -32,6 +33,7 @@ const navItems = [
   { href: "/profit-planner", icon: DollarSign, label: "Profit Planner" },
   { href: "/marketplace", icon: Store, label: "Marketplace" },
   { href: "/plant-doctor", icon: Stethoscope, label: "Plant Doctor" },
+  { href: "/soil-analysis", icon: FlaskConical, label: "Soil Analysis" },
   { href: "/irrigation", icon: Droplets, label: "Irrigation" },
   { href: "/crop-management", icon: Sprout, label: "Crop Management" },
   { href: "/equipment", icon: Tractor, label: "Equipment" },

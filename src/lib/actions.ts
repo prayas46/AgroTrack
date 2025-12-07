@@ -22,6 +22,10 @@ import {
   textToSpeech,
   type TextToSpeechOutput,
 } from "@/ai/flows/text-to-speech";
+import {
+  analyzeSoil,
+  type SoilAnalysisOutput,
+} from "@/ai/flows/soil-analysis";
 
 import {
   ClimateRiskFormSchema,
@@ -29,6 +33,7 @@ import {
   PlantDoctorFormSchema,
   ProfitPlannerFormSchema,
   AadharUploadFormSchema,
+  SoilAnalysisFormSchema,
 } from "./definitions";
 
 type FormState<T> = {
@@ -43,7 +48,7 @@ type UploadFormState = {
     message: string | null;
     success: boolean;
     errors?: {
-        [key: string]: string[] | undefined;
+        [key:string]: string[] | undefined;
     };
 };
 
@@ -206,4 +211,36 @@ export async function uploadAadharCard(
         console.error("Aadhar upload failed:", error);
         return { message: "An unexpected error occurred during upload. Please try again.", success: false };
     }
+}
+
+export async function getSoilAnalysis(
+  prevState: FormState<SoilAnalysisOutput>,
+  formData: FormData
+): Promise<FormState<SoilAnalysisOutput>> {
+  const validatedFields = SoilAnalysisFormSchema.safeParse({
+    ph: formData.get("ph"),
+    nitrogen: formData.get("nitrogen"),
+    phosphorus: formData.get("phosphorus"),
+    potassium: formData.get("potassium"),
+    moisture: formData.get("moisture"),
+    organicMatter: formData.get("organicMatter"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      message: "Invalid form data. Please check your inputs.",
+      errors: validatedFields.error.flatten().fieldErrors,
+      data: null,
+    };
+  }
+
+  try {
+    const data = await analyzeSoil(validatedFields.data);
+    return { message: null, data, errors: {} };
+  } catch (error) {
+    return {
+      message: "Failed to perform soil analysis. Please try again.",
+      data: null,
+    };
+  }
 }

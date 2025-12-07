@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { ArrowRight, CloudSun, DollarSign, Droplets, FileText, Sprout, Store, Stethoscope, Tractor } from "lucide-react";
+import { ArrowRight, CloudSun, DollarSign, Droplets, FileText, FlaskConical, Sprout, Store, Stethoscope, Tractor } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -44,6 +44,13 @@ const features = [
     link: "/plant-doctor",
     icon: Stethoscope,
     image: PlaceHolderImages.find(img => img.id === "plant-doctor-card"),
+  },
+   {
+    title: "Soil Analysis",
+    description: "Get AI-driven soil analysis and fertilizer recommendations based on your soil's composition.",
+    link: "/soil-analysis",
+    icon: FlaskConical,
+    image: PlaceHolderImages.find(img => img.id === "soil-analysis-card"),
   },
   {
     title: "Irrigation Management",

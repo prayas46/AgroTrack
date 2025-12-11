@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from "@/firebase/client-provider";
 import AppSidebar from "@/components/app-sidebar";
 import { LanguageProvider } from "@/context/language-context";
+import { AuthSessionProvider } from "@/components/session-provider";
 
 export const metadata: Metadata = {
   title: "AgroTrack",
@@ -28,19 +29,21 @@ export default function RootLayout({
         />
       </head>
       <body className={cn("font-body antialiased")}>
-        <FirebaseClientProvider>
-          <LanguageProvider>
-            <div className="relative flex min-h-screen w-full flex-col">
-              <AppSidebar />
-              <main className="flex-1">
-                <div className="container max-w-7xl p-4 sm:p-6 lg:p-8">
-                  {children}
-                </div>
-              </main>
-            </div>
-            <Toaster />
-          </LanguageProvider>
-        </FirebaseClientProvider>
+        <AuthSessionProvider>
+          <FirebaseClientProvider>
+            <LanguageProvider>
+              <div className="relative flex min-h-screen w-full flex-col">
+                <AppSidebar />
+                <main className="flex-1">
+                  <div className="container max-w-7xl p-4 sm:p-6 lg:p-8">
+                    {children}
+                  </div>
+                </main>
+              </div>
+              <Toaster />
+            </LanguageProvider>
+          </FirebaseClientProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );

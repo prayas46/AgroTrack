@@ -216,6 +216,5 @@ export default {
   },
   plugins: [
     require('tailwindcss-animate'),
-    require('@tailwindcss/line-clamp'), // Add line-clamp plugin
   ],
 } satisfies Config;

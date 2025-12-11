@@ -1,41 +1,70 @@
 
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Performance optimizations
+  reactStrictMode: true,
+  compress: true,
+  experimental: {
+    // Turbopack optimizations
+    turbo: {
+      // Disable experimental turbopack configurations that might cause issues
+      resolveAlias: {
+        // Add any necessary aliases here if needed
+      }
+    }
+  },
+  // Disable webpack optimizations when using Turbopack
+  webpack: process.env.TURBOPACK ? undefined : (config, { isServer }) => {
+    if (!isServer) {
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = true;
+    }
+    return config;
+  },
+  
+  // TypeScript and ESLint configurations
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  // Image optimization
   images: {
+    minimumCacheTTL: 60 * 60 * 24 * 7, // 1 week cache
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'plus.unsplash.com',
-        port: '',
-        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
       },
     ],
+  },
+
+  // Webpack optimizations
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Enable tree shaking for production builds
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = true;
+    }
+    return config;
   },
 };
 

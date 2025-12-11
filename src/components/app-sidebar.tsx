@@ -38,6 +38,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { useLanguage } from '@/context/language-context';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, labelKey: 'dashboard', emoji: '📊' },
@@ -59,6 +60,7 @@ export default function AppSidebar() {
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const { t, setLanguage, languages } = useLanguage();
+  const { data: session, status } = useSession();
 
   const translatedNavItems = useMemo(() => {
     return navItems.map(item => ({
@@ -200,6 +202,25 @@ export default function AppSidebar() {
             >
               <Search className="h-4 w-4" />
             </Button>
+            {status !== 'loading' && (
+              session ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => signOut()}
+                >
+                  Sign out
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                >
+                  <Link href="/auth">Sign in</Link>
+                </Button>
+              )
+            )}
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -146,7 +146,7 @@ export default function IrrigationPage() {
     <div className="space-y-8">
       <PageHeader
         title="Irrigation Management"
-        description="Monitor and control your farm's irrigation zones with real-time data."
+        description="Real-time soil moisture monitoring and automated irrigation control"
       />
 
       <Card>

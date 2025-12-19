@@ -14,7 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Droplet, Thermometer, Wind } from "lucide-react";
 import type { Zone } from "./data";
 
-const statusConfig = {
+type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
+
+const statusConfig: Record<Zone["status"], { variant: BadgeVariant; label: string; className: string }> = {
   active: {
     variant: "default",
     label: "Active",

@@ -56,16 +56,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-
-  // Webpack optimizations
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      // Enable tree shaking for production builds
-      config.optimization.usedExports = true;
-      config.optimization.sideEffects = true;
-    }
-    return config;
-  },
 };
 
 export default nextConfig;

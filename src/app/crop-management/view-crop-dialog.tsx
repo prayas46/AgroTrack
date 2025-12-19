@@ -22,10 +22,16 @@ type ViewCropDialogProps = {
   crop: Crop | null;
 };
 
-const getHealthConfig = (health: number) => {
-    if (health > 85) return { variant: "secondary", label: "Good", color: "text-green-600" };
-    if (health > 70) return { variant: "outline", label: "Fair", color: "text-yellow-600" };
-    return { variant: "destructive", label: "Poor", color: "text-red-600" };
+type HealthConfig = {
+  variant: "secondary" | "outline" | "destructive";
+  label: string;
+  color: string;
+};
+
+const getHealthConfig = (health: number): HealthConfig => {
+  if (health > 85) return { variant: "secondary", label: "Good", color: "text-green-600" };
+  if (health > 70) return { variant: "outline", label: "Fair", color: "text-yellow-600" };
+  return { variant: "destructive", label: "Poor", color: "text-red-600" };
 }
 
 export function ViewCropDialog({ isOpen, onClose, crop }: ViewCropDialogProps) {

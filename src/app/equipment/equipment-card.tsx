@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { MapPin, Wrench, Battery, Fuel, Tractor, Bot, Cog } from "lucide-react";
+import { MapPin, Wrench, Battery, Fuel, Tractor, Bot, Cog, type LucideIcon } from "lucide-react";
 import type { Equipment } from "./data";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,7 +16,7 @@ const statusConfig: { [key in Equipment['status']]: { variant: "default" | "seco
   maintenance: { variant: "destructive", label: "Maintenance" },
 };
 
-const typeIcons: { [key in Equipment['type']]: React.ElementType } = {
+const typeIcons: Record<Equipment["type"], LucideIcon> = {
     Tractor: Tractor,
     Harvester: Bot,
     Pump: Cog,

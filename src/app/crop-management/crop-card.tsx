@@ -15,10 +15,17 @@ type CropCardProps = {
   onUpdate: (id: number) => void;
 };
 
-const getHealthConfig = (health: number) => {
-    if (health > 85) return { variant: "secondary", label: "Good", color: "bg-green-500", textColor: "text-green-800" };
-    if (health > 70) return { variant: "outline", label: "Fair", color: "bg-yellow-500", textColor: "text-yellow-800" };
-    return { variant: "destructive", label: "Poor", color: "bg-red-500", textColor: "text-red-800" };
+type HealthConfig = {
+  variant: "secondary" | "outline" | "destructive";
+  label: string;
+  color: string;
+  textColor: string;
+};
+
+const getHealthConfig = (health: number): HealthConfig => {
+  if (health > 85) return { variant: "secondary", label: "Good", color: "bg-green-500", textColor: "text-green-800" };
+  if (health > 70) return { variant: "outline", label: "Fair", color: "bg-yellow-500", textColor: "text-yellow-800" };
+  return { variant: "destructive", label: "Poor", color: "bg-red-500", textColor: "text-red-800" };
 }
 
 export function CropCard({ crop, onViewDetails, onUpdate }: CropCardProps) {

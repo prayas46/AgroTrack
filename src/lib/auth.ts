@@ -1,8 +1,9 @@
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
-import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
+import { db } from "@/firebase/server";
+import { FieldValue } from "firebase-admin/firestore";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -21,24 +22,32 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
+        const email = credentials.email.trim().toLowerCase();
 
-        if (!user) {
+        const authUserSnap = await db.collection("auth_users").doc(email).get();
+        if (!authUserSnap.exists) {
           return null;
         }
 
-        const isValid = await compare(credentials.password, user.passwordHash);
+        const authUser = authUserSnap.data() as any;
+
+        if (!authUser?.passwordHash) {
+          return null;
+        }
+
+        const isValid = await compare(credentials.password, authUser.passwordHash);
 
         if (!isValid) {
           return null;
         }
 
+        const profileSnap = await db.collection("users").doc(email).get();
+        const profile = profileSnap.exists ? (profileSnap.data() as any) : {};
+
         return {
-          id: user.id,
-          name: user.name ?? undefined,
-          email: user.email,
+          id: email,
+          name: profile?.name ?? undefined,
+          email: profile?.email ?? email,
         };
       },
     }),
@@ -54,14 +63,17 @@ export const authOptions: NextAuthOptions = {
       if (account && profile) {
         token.provider = account.provider;
         token.name = profile.name ?? token.name;
-        // @ts-expect-error email may not exist on profile for all providers
-        token.email = profile.email ?? token.email;
+        const profileEmail = (profile as any)?.email;
+        if (typeof profileEmail === "string") {
+          (token as any).email = profileEmail;
+        }
       }
 
       if (user) {
         token.name = user.name ?? token.name;
-        // @ts-expect-error email may be undefined on user
-        token.email = user.email ?? token.email;
+        if (typeof (user as any).email === "string") {
+          (token as any).email = (user as any).email;
+        }
       }
 
       return token;
@@ -69,10 +81,50 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.name = token.name ?? session.user.name;
-        // @ts-expect-error email may be undefined on token
-        session.user.email = token.email ?? session.user.email;
+        const tokenEmail = (token as any)?.email;
+        if (typeof tokenEmail === "string") {
+          session.user.email = tokenEmail;
+        }
       }
       return session;
+    },
+  },
+  events: {
+    async signIn({ user, account, profile }) {
+      const provider = account?.provider;
+      const email =
+        typeof profile?.email === "string"
+          ? profile.email.trim().toLowerCase()
+          : typeof (user as any)?.email === "string"
+            ? String((user as any).email).trim().toLowerCase()
+            : "";
+      const name =
+        typeof profile?.name === "string"
+          ? profile.name.trim()
+          : typeof (user as any)?.name === "string"
+            ? String((user as any).name).trim()
+            : "";
+
+      if (!provider || !email) return;
+
+      const ref = db.collection("users").doc(email);
+      const existing = await ref.get();
+
+      await ref.set(
+        {
+          email,
+          name: name || null,
+          provider,
+          updatedAt: FieldValue.serverTimestamp(),
+          ...(existing.exists
+            ? {}
+            : {
+                createdAt: FieldValue.serverTimestamp(),
+                role: "Farmer",
+              }),
+        },
+        { merge: true }
+      );
     },
   },
 };

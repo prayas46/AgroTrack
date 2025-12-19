@@ -66,7 +66,7 @@ export async function createReport(
   try {
     const newReportRef = doc(collection(firestore, 'reports'));
 
-    const newReport: Omit<Report, 'createdAt' | 'id'> & { createdAt: any, id: string } = {
+    const newReport: Omit<Report, 'createdAt' | 'updatedAt' | 'id'> & { createdAt: any, updatedAt: any, id: string } = {
       id: newReportRef.id,
       userId: 'public_user', // Assign to a generic ID
       title: reportData.title.trim(),

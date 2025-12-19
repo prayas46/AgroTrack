@@ -30,7 +30,7 @@ export default function EquipmentPage() {
           const newEfficiency = Math.max(50, Math.min(100, equip.efficiency + efficiencyChange));
 
           // Randomly change status
-          let newStatus = equip.status;
+          let newStatus: Equipment['status'] = equip.status;
           if (Math.random() < 0.05) {
               if (newStatus === 'active') newStatus = 'idle';
               else if (newStatus === 'idle') newStatus = 'active';
@@ -38,13 +38,11 @@ export default function EquipmentPage() {
           
           // Check for maintenance state
           if (newMetricValue < 15 || newEfficiency < 60) {
-            if (equip.status !== 'maintenance') {
-                 toast({
-                    variant: "destructive",
-                    title: `Maintenance Alert: ${equip.name}`,
-                    description: `Check ${equip.metric.type} levels and efficiency.`,
-                 });
-            }
+            toast({
+              variant: "destructive",
+              title: `Maintenance Alert: ${equip.name}`,
+              description: `Check ${equip.metric.type} levels and efficiency.`,
+            });
             newStatus = 'maintenance';
           }
 

@@ -17,7 +17,7 @@ interface SearchDialogProps {
     navItems: {
         href: string;
         label: string;
-        icon: React.ElementType;
+        icon: React.ComponentType<{ className?: string }>;
     }[];
 }
 
@@ -43,7 +43,10 @@ export function SearchDialog({ open, onOpenChange, navItems }: SearchDialogProps
                 runCommand(() => router.push(navItem.href as string))
               }}
             >
-              <navItem.icon className="mr-2 h-4 w-4" />
+              {(() => {
+                const Icon = navItem.icon;
+                return <Icon className="mr-2 h-4 w-4" />;
+              })()}
               {navItem.label}
             </CommandItem>
           ))}
